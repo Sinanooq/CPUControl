@@ -50,10 +50,10 @@ class MainActivity : AppCompatActivity() {
         scope.launch {
             val ok = withContext(Dispatchers.IO) { RootHelper.checkRoot() }
             if (ok) {
-                tvRoot.text = "● Root granted"
+                tvRoot.text = "● Root izni verildi"
                 tvRoot.setTextColor(getColor(android.R.color.holo_green_dark))
             } else {
-                tvRoot.text = "● Root not available"
+                tvRoot.text = "● Root erişimi yok"
                 tvRoot.setTextColor(getColor(android.R.color.holo_red_dark))
             }
         }

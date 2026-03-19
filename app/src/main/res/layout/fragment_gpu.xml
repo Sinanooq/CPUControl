@@ -57,13 +57,13 @@
                         android:orientation="vertical"
                         android:layout_marginEnd="8dp">
 
-                        <TextView
-                            android:text="CURRENT MIN"
-                            android:textSize="10sp"
-                            android:textColor="@color/text_secondary"
-                            android:letterSpacing="0.1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="MEVCUT MİN"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_secondary"
+                    android:letterSpacing="0.1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
                         <TextView
                             android:id="@+id/tvGpuCurrentMin"
@@ -82,7 +82,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:text="CURRENT MAX"
+                            android:text="MEVCUT MAKS"
                             android:textSize="10sp"
                             android:textColor="@color/text_secondary"
                             android:letterSpacing="0.1"
@@ -121,7 +121,7 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:text="MIN FREQUENCY"
+                    android:text="MİNİMUM FREKANS"
                     android:textSize="11sp"
                     android:textColor="@color/accent_purple"
                     android:letterSpacing="0.1"
@@ -189,7 +189,7 @@
                 android:padding="16dp">
 
                 <TextView
-                    android:text="MAX FREQUENCY"
+                    android:text="MAKSİMUM FREKANS"
                     android:textSize="11sp"
                     android:textColor="@color/accent_yellow"
                     android:letterSpacing="0.1"
@@ -241,7 +241,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGpuApply"
-            android:text="Apply"
+            android:text="Uygula"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             app:cornerRadius="12dp"

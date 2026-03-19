@@ -7,27 +7,27 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.*
 
 class CpuFragment : Fragment() {
 
     companion object {
-        private const val ARG_CPU = "cpu_index"
-        private const val ARG_TYPE = "cpu_type" // "little" | "big" | "prime"
+        private const val ARG_CPU  = "cpu_index"
+        private const val ARG_TYPE = "cpu_type"
 
-        fun newInstance(cpuIndex: Int, cpuType: String): CpuFragment {
-            return CpuFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_CPU, cpuIndex)
-                    putString(ARG_TYPE, cpuType)
-                }
+        fun newInstance(cpuIndex: Int, cpuType: String) = CpuFragment().apply {
+            arguments = Bundle().apply {
+                putInt(ARG_CPU, cpuIndex)
+                putString(ARG_TYPE, cpuType)
             }
         }
     }
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private var cpuIndex = 0
-    private var cpuType = "little"
+    private var cpuType  = "little"
 
     private val freqs get() = when (cpuType) {
         "big"   -> RootHelper.BIG_FREQS
@@ -38,18 +38,14 @@ class CpuFragment : Fragment() {
     private val prefMin get() = "cpu${cpuIndex}_min"
     private val prefMax get() = "cpu${cpuIndex}_max"
 
-    private val defaultMin get() = freqs.first()
-    private val defaultMax get() = freqs.last()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         cpuIndex = arguments?.getInt(ARG_CPU) ?: 0
         cpuType  = arguments?.getString(ARG_TYPE) ?: "little"
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_cpu, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        inflater.inflate(R.layout.fragment_cpu, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tvTitle    = view.findViewById<TextView>(R.id.tvCoreTitle)
@@ -66,11 +62,13 @@ class CpuFragment : Fragment() {
         val tvMaxHigh  = view.findViewById<TextView>(R.id.tvMaxHigh)
         val btnApply   = view.findViewById<MaterialButton>(R.id.btnApply)
         val tvStatus   = view.findViewById<TextView>(R.id.tvApplyStatus)
+        val switchOnline = view.findViewById<SwitchMaterial>(R.id.switchOnline)
+        val cardFreqs  = view.findViewById<MaterialCardView>(R.id.cardFreqs)
 
         val subtitle = when (cpuType) {
-            "big"   -> "Cortex-A715  •  max 3200 MHz"
-            "prime" -> "Cortex-A715 Prime  •  max 3350 MHz"
-            else    -> "Cortex-A510  •  max 2200 MHz"
+            "big"   -> "Cortex-A715  •  maks 3200 MHz"
+            "prime" -> "Cortex-A715 Prime  •  maks 3350 MHz"
+            else    -> "Cortex-A510  •  maks 2200 MHz"
         }
         tvTitle.text    = "cpu$cpuIndex"
         tvSubtitle.text = subtitle
@@ -83,16 +81,47 @@ class CpuFragment : Fragment() {
         seekMin.max = freqs.size - 1
         seekMax.max = freqs.size - 1
 
-        // Load saved prefs
         val prefs = requireContext().getSharedPreferences("cpu_prefs", 0)
-        val savedMin = prefs.getInt(prefMin, defaultMin)
-        val savedMax = prefs.getInt(prefMax, defaultMax)
-        val minIdx = freqs.indexOf(savedMin).coerceAtLeast(0)
-        val maxIdx = freqs.indexOf(savedMax).coerceAtLeast(freqs.size - 1)
-        seekMin.progress = minIdx
-        seekMax.progress = maxIdx
-        tvMinSel.text = "${freqs[minIdx] / 1000} MHz"
-        tvMaxSel.text = "${freqs[maxIdx] / 1000} MHz"
+        val savedMin = prefs.getInt(prefMin, freqs.first())
+        val savedMax = prefs.getInt(prefMax, freqs.last())
+        seekMin.progress = freqs.indexOf(savedMin).coerceAtLeast(0)
+        seekMax.progress = freqs.indexOf(savedMax).coerceAtLeast(freqs.size - 1)
+        tvMinSel.text = "${freqs[seekMin.progress] / 1000} MHz"
+        tvMaxSel.text = "${freqs[seekMax.progress] / 1000} MHz"
+
+        // cpu0 kapatılamaz
+        if (cpuIndex == 0) {
+            switchOnline.isChecked = true
+            switchOnline.isEnabled = false
+            switchOnline.text = "Kapatılamaz"
+        } else {
+            // Mevcut durumu oku
+            scope.launch {
+                val online = withContext(Dispatchers.IO) { RootHelper.isCpuOnline(cpuIndex) }
+                switchOnline.isChecked = online
+                switchOnline.text = if (online) "Aktif" else "Kapalı"
+                cardFreqs.alpha = if (online) 1f else 0.4f
+                btnApply.isEnabled = online
+            }
+
+            switchOnline.setOnCheckedChangeListener { _, isChecked ->
+                scope.launch {
+                    val ok = withContext(Dispatchers.IO) { RootHelper.setCpuOnline(cpuIndex, isChecked) }
+                    if (ok) {
+                        switchOnline.text = if (isChecked) "Aktif" else "Kapalı"
+                        cardFreqs.alpha = if (isChecked) 1f else 0.4f
+                        btnApply.isEnabled = isChecked
+                        tvStatus.text = if (isChecked) "cpu$cpuIndex açıldı" else "cpu$cpuIndex kapatıldı"
+                        tvStatus.setTextColor(requireContext().getColor(
+                            if (isChecked) android.R.color.holo_green_dark else android.R.color.holo_orange_dark))
+                    } else {
+                        switchOnline.isChecked = !isChecked
+                        tvStatus.text = "İşlem başarısız"
+                        tvStatus.setTextColor(requireContext().getColor(android.R.color.holo_red_dark))
+                    }
+                }
+            }
+        }
 
         seekMin.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(sb: SeekBar, p: Int, fromUser: Boolean) {
@@ -118,21 +147,20 @@ class CpuFragment : Fragment() {
             val minFreq = freqs[seekMin.progress]
             val maxFreq = freqs[seekMax.progress]
             btnApply.isEnabled = false
-            tvStatus.text = "Applying..."
+            tvStatus.text = "Uygulanıyor..."
 
             scope.launch {
                 val ok = withContext(Dispatchers.IO) {
-                    val r1 = RootHelper.setCpuMinFreq(listOf(cpuIndex), minFreq)
-                    val r2 = RootHelper.setCpuMaxFreq(listOf(cpuIndex), maxFreq)
-                    r1 && r2
+                    RootHelper.setCpuMinFreq(listOf(cpuIndex), minFreq) &&
+                    RootHelper.setCpuMaxFreq(listOf(cpuIndex), maxFreq)
                 }
                 btnApply.isEnabled = true
                 if (ok) {
                     prefs.edit().putInt(prefMin, minFreq).putInt(prefMax, maxFreq).apply()
-                    tvStatus.text = "Saved  •  ${minFreq / 1000} – ${maxFreq / 1000} MHz"
+                    tvStatus.text = "Kaydedildi  •  ${minFreq / 1000} – ${maxFreq / 1000} MHz"
                     tvStatus.setTextColor(requireContext().getColor(android.R.color.holo_green_dark))
                 } else {
-                    tvStatus.text = "Failed to apply"
+                    tvStatus.text = "Uygulama başarısız"
                     tvStatus.setTextColor(requireContext().getColor(android.R.color.holo_red_dark))
                 }
                 refreshCurrent(tvCurMin, tvCurMax)

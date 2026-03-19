@@ -76,10 +76,10 @@ class GpuFragment : Fragment() {
                 btnApply.isEnabled = true
                 if (ok) {
                     prefs.edit().putInt("gpu_min", minFreq).putInt("gpu_max", maxFreq).apply()
-                    tvStatus.text = "Saved  •  ${minFreq / 1000000} – ${maxFreq / 1000000} MHz"
+                    tvStatus.text = "Kaydedildi  •  ${minFreq / 1000000} – ${maxFreq / 1000000} MHz"
                     tvStatus.setTextColor(requireContext().getColor(android.R.color.holo_green_dark))
                 } else {
-                    tvStatus.text = "Failed to apply"
+                    tvStatus.text = "Uygulama başarısız"
                     tvStatus.setTextColor(requireContext().getColor(android.R.color.holo_red_dark))
                 }
                 refreshCurrent(tvCurMin, tvCurMax)
