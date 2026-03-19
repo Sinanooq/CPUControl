@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.CPUControl" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#00E5FF</item>
+        <item name="colorOnPrimary">#000000</item>
+        <item name="colorPrimaryContainer">#003640</item>
+        <item name="colorSurface">#0D1117</item>
+        <item name="colorSurfaceVariant">#161B22</item>
+        <item name="colorOnSurface">#E6EDF3</item>
+        <item name="colorOnSurfaceVariant">#8B949E</item>
+        <item name="colorOutline">#30363D</item>
+        <item name="android:windowBackground">#0D1117</item>
+        <item name="android:statusBarColor">#0D1117</item>
+        <item name="android:navigationBarColor">#0D1117</item>
+    </style>
+</resources>
