@@ -24,7 +24,8 @@ class MainActivity : AppCompatActivity() {
         "cpu5" to { CpuFragment.newInstance(5, "big") },
         "cpu6" to { CpuFragment.newInstance(6, "big") },
         "cpu7" to { CpuFragment.newInstance(7, "prime") },
-        "GPU"  to { GpuFragment() }
+        "GPU"  to { GpuFragment() },
+        "Profil" to { ProfileFragment() }
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

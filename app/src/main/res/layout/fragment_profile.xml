@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_primary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Manuel Profiller -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:text="MANUEL PROFİL"
+                    android:textSize="11sp"
+                    android:textColor="@color/accent_cyan"
+                    android:letterSpacing="0.1"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvActiveProfile"
+                    android:text="Aktif: —"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginBottom="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <!-- Pil Tasarrufu -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPilTasarrufu"
+                    android:text="🔋  Pil Tasarrufu"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="8dp"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/bg_card2"
+                    android:textColor="@color/accent_green"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"/>
+
+                <!-- Dengeli -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDengeli"
+                    android:text="⚖️  Dengeli"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="8dp"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/bg_card2"
+                    android:textColor="@color/accent_cyan"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"/>
+
+                <!-- Performans -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPerformans"
+                    android:text="🚀  Performans"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="8dp"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/bg_card2"
+                    android:textColor="@color/accent_orange"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"/>
+
+                <!-- Oyun -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnOyun"
+                    android:text="🎮  Oyun"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="8dp"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/bg_card2"
+                    android:textColor="@color/accent_purple"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"/>
+
+                <!-- Gece -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGece"
+                    android:text="🌙  Gece Modu"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/bg_card2"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Otomatik Profil -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="16dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:text="OTOMATİK PROFİL"
+                        android:textSize="11sp"
+                        android:textColor="@color/accent_yellow"
+                        android:letterSpacing="0.1"
+                        android:textStyle="bold"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchAuto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:thumbTint="@color/accent_yellow"
+                        app:trackTint="@color/divider"/>
+
+                </LinearLayout>
+
+                <!-- Şarjda performans -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:text="Şarjda performans profili"
+                        android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchChargingPerf"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:thumbTint="@color/accent_cyan"
+                        app:trackTint="@color/divider"/>
+                </LinearLayout>
+
+                <!-- Düşük pil eşiği -->
+                <TextView
+                    android:text="Düşük pil eşiği (Pil Tasarrufu)"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <SeekBar
+                        android:id="@+id/seekLowBattery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="50"
+                        android:progress="20"
+                        android:progressTint="@color/accent_green"
+                        android:thumbTint="@color/accent_green"/>
+
+                    <TextView
+                        android:id="@+id/tvLowBattery"
+                        android:text="%20"
+                        android:textSize="13sp"
+                        android:textColor="@color/accent_green"
+                        android:textStyle="bold"
+                        android:layout_marginStart="12dp"
+                        android:minWidth="40dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <!-- Orta pil eşiği -->
+                <TextView
+                    android:text="Orta pil eşiği (Dengeli)"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_primary"
+                    android:layout_marginBottom="4dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <SeekBar
+                        android:id="@+id/seekMidBattery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:progress="50"
+                        android:progressTint="@color/accent_cyan"
+                        android:thumbTint="@color/accent_cyan"/>
+
+                    <TextView
+                        android:id="@+id/tvMidBattery"
+                        android:text="%50"
+                        android:textSize="13sp"
+                        android:textColor="@color/accent_cyan"
+                        android:textStyle="bold"
+                        android:layout_marginStart="12dp"
+                        android:minWidth="40dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvAutoStatus"
+                    android:text=""
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>
