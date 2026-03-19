@@ -1,9 +1,16 @@
 package com.cpucontrol
 
-import android.app.*
-import android.content.*
-import android.os.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.BatteryManager
+import android.os.Build
+import android.os.IBinder
+import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 
@@ -38,24 +45,20 @@ class AutoProfileService : Service() {
                     updateNotification("Profil: ${Profiles.isimler[profile]}")
                 }
             }
-            delay(30_000) // 30 saniyede bir kontrol
+            delay(30_000)
         }
     }
 
     private fun determineProfile(prefs: android.content.SharedPreferences): String {
         val batteryLevel = getBatteryLevel()
-        val isCharging   = isCharging()
+        val charging     = isCharging()
         val thermalLevel = getThermalLevel()
 
-        // Termal kısıtlama varsa pil tasarrufu
         if (thermalLevel >= 3) return "pil_tasarrufu"
+        if (charging && prefs.getBoolean("auto_charging_perf", true)) return "performans"
 
-        // Şarjdaysa performans (kullanıcı ayarına göre)
-        if (isCharging && prefs.getBoolean("auto_charging_perf", true)) return "performans"
-
-        // Pil seviyesine göre
-        val lowBattery  = prefs.getInt("auto_low_battery", 20)
-        val midBattery  = prefs.getInt("auto_mid_battery", 50)
+        val lowBattery = prefs.getInt("auto_low_battery", 20)
+        val midBattery = prefs.getInt("auto_mid_battery", 50)
 
         return when {
             batteryLevel <= lowBattery -> "pil_tasarrufu"
@@ -81,22 +84,28 @@ class AutoProfileService : Service() {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val pm = getSystemService(POWER_SERVICE) as PowerManager
                 pm.currentThermalStatus
-            } else 0
-        } catch (e: Exception) { 0 }
+            } else {
+                0
+            }
+        } catch (e: Exception) {
+            0
+        }
     }
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                CHANNEL_ID, "CPU Kontrol Servisi",
+                CHANNEL_ID,
+                "CPU Kontrol Servisi",
                 NotificationManager.IMPORTANCE_LOW
             ).apply { description = "Otomatik profil yönetimi" }
-            getSystemService(NotificationManager::class.java).createNotificationChannel(channel)
+            getSystemService(NotificationManager::class.java)
+                .createNotificationChannel(channel)
         }
     }
 
     private fun buildNotification(text: String): Notification {
-        val intent = PendingIntent.getActivity(
+        val pi = PendingIntent.getActivity(
             this, 0,
             packageManager.getLaunchIntentForPackage(packageName),
             PendingIntent.FLAG_IMMUTABLE
@@ -105,17 +114,16 @@ class AutoProfileService : Service() {
             .setContentTitle("CPU Kontrol")
             .setContentText(text)
             .setSmallIcon(android.R.drawable.ic_menu_manage)
-            .setContentIntent(intent)
+            .setContentIntent(pi)
             .setOngoing(true)
             .build()
     }
 
     private fun updateNotification(text: String) {
-        val nm = getSystemService(NotificationManager::class.java)
-        nm.notify(1, buildNotification(text))
+        getSystemService(NotificationManager::class.java).notify(1, buildNotification(text))
     }
 
-    override fun onBind(intent: Intent?) = null
+    override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onDestroy() {
         scope.cancel()
