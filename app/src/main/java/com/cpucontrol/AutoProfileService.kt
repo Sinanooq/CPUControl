@@ -78,8 +78,6 @@ class AutoProfileService : Service() {
 
     private fun getThermalLevel(): Int {
         return try {
-            val tm = getSystemService(THERMAL_SERVICE) as? PowerManager
-            // Android 10+ thermal API
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 val pm = getSystemService(POWER_SERVICE) as PowerManager
                 pm.currentThermalStatus
