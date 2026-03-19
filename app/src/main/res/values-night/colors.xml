@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark tema (varsayılan) -->
     <color name="bg_primary">#08090E</color>
     <color name="bg_surface">#0F1117</color>
     <color name="bg_card">#13161F</color>
@@ -11,8 +10,6 @@
     <color name="text_hint">#3D4251</color>
     <color name="divider">#1E2235</color>
     <color name="on_primary">#08090E</color>
-
-    <!-- Accent — canlı neon tonları -->
     <color name="accent_cyan">#00D4FF</color>
     <color name="accent_cyan_dim">#0A2A35</color>
     <color name="accent_green">#00E676</color>
@@ -25,6 +22,5 @@
     <color name="accent_yellow_dim">#2A2200</color>
     <color name="accent_pink">#FF4D8D</color>
     <color name="accent_pink_dim">#2A0A1A</color>
-
     <bool name="is_light_theme">false</bool>
 </resources>

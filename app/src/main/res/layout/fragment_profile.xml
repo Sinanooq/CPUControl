@@ -9,7 +9,62 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="24dp">
+
+        <!-- Aktif profil göstergesi -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="@color/accent_cyan_dim"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:padding="18dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:text="AKTİF PROFİL"
+                        android:textSize="8sp"
+                        android:textColor="@color/text_secondary"
+                        android:letterSpacing="0.2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/tvActiveProfile"
+                        android:text="—"
+                        android:textSize="24sp"
+                        android:textColor="@color/accent_cyan"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvProfileStatus"
+                    android:text=""
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
         <!-- Manuel Profiller -->
         <com.google.android.material.card.MaterialCardView
@@ -17,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             app:cardBackgroundColor="@color/bg_card"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="24dp"
             app:strokeColor="@color/divider"
             app:strokeWidth="1dp"
             app:cardElevation="0dp">
@@ -26,95 +81,176 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
-                    android:text="MANUEL PROFİL"
-                    android:textSize="11sp"
-                    android:textColor="@color/accent_cyan"
-                    android:letterSpacing="0.1"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/tvActiveProfile"
-                    android:text="Aktif: —"
-                    android:textSize="13sp"
+                    android:text="MANUEL PROFİLLER"
+                    android:textSize="8sp"
                     android:textColor="@color/text_secondary"
+                    android:letterSpacing="0.2"
                     android:layout_marginBottom="16dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <!-- Pil Tasarrufu -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPilTasarrufu"
-                    android:text="🔋  Pil Tasarrufu"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPilTasarrufu"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="@color/bg_card2"
-                    android:textColor="@color/accent_green"
-                    android:textSize="14sp"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="16dp"/>
+                    app:cardBackgroundColor="@color/accent_green_dim"
+                    app:cardCornerRadius="16dp"
+                    app:strokeColor="@color/accent_green_dim"
+                    app:strokeWidth="0dp"
+                    app:cardElevation="0dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:padding="16dp">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:text="Pil Tasarrufu" android:textSize="15sp"
+                                android:textColor="@color/accent_green" android:textStyle="bold"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView android:text="cpu6-7 kapalı  ·  GPU 400 MHz" android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPilTasarrufu"
+                            android:text="Uygula"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/accent_green"
+                            android:textColor="#000000" android:textSize="12sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!-- Dengeli -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnDengeli"
-                    android:text="⚖️  Dengeli"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardDengeli"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="@color/bg_card2"
-                    android:textColor="@color/accent_cyan"
-                    android:textSize="14sp"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="16dp"/>
+                    app:cardBackgroundColor="@color/accent_cyan_dim"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp"
+                    app:cardElevation="0dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:padding="16dp">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:text="Dengeli" android:textSize="15sp"
+                                android:textColor="@color/accent_cyan" android:textStyle="bold"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView android:text="Tüm çekirdekler  ·  GPU 700 MHz" android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnDengeli"
+                            android:text="Uygula"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/accent_cyan"
+                            android:textColor="#000000" android:textSize="12sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!-- Performans -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPerformans"
-                    android:text="🚀  Performans"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardPerformans"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="@color/bg_card2"
-                    android:textColor="@color/accent_orange"
-                    android:textSize="14sp"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="16dp"/>
+                    app:cardBackgroundColor="@color/accent_orange_dim"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp"
+                    app:cardElevation="0dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:padding="16dp">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:text="Performans" android:textSize="15sp"
+                                android:textColor="@color/accent_orange" android:textStyle="bold"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView android:text="Maks frekans  ·  GPU 1400 MHz" android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnPerformans"
+                            android:text="Uygula"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/accent_orange"
+                            android:textColor="#000000" android:textSize="12sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!-- Oyun -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnOyun"
-                    android:text="🎮  Oyun"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardOyun"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="@color/bg_card2"
-                    android:textColor="@color/accent_purple"
-                    android:textSize="14sp"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="16dp"/>
+                    app:cardBackgroundColor="@color/accent_purple_dim"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp"
+                    app:cardElevation="0dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:padding="16dp">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:text="Oyun" android:textSize="15sp"
+                                android:textColor="@color/accent_purple" android:textStyle="bold"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView android:text="Big+Prime maks  ·  GPU 1400 MHz" android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnOyun"
+                            android:text="Uygula"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/accent_purple"
+                            android:textColor="#000000" android:textSize="12sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
                 <!-- Gece -->
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGece"
-                    android:text="🌙  Gece Modu"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardGece"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    app:cornerRadius="12dp"
-                    android:backgroundTint="@color/bg_card2"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="14sp"
-                    android:gravity="start|center_vertical"
-                    android:paddingStart="16dp"/>
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/bg_card2"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp"
+                    app:cardElevation="0dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                        android:orientation="horizontal" android:gravity="center_vertical"
+                        android:padding="16dp">
+                        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                            android:layout_weight="1" android:orientation="vertical">
+                            <TextView android:text="Gece Modu" android:textSize="15sp"
+                                android:textColor="@color/text_primary" android:textStyle="bold"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                            <TextView android:text="cpu4-7 kapalı  ·  GPU 300 MHz" android:textSize="11sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnGece"
+                            android:text="Uygula"
+                            android:layout_width="wrap_content" android:layout_height="36dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/bg_elevated"
+                            android:textColor="@color/text_primary" android:textSize="12sp"/>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -123,9 +259,8 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
             app:cardBackgroundColor="@color/bg_card"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="24dp"
             app:strokeColor="@color/divider"
             app:strokeWidth="1dp"
             app:cardElevation="0dp">
@@ -134,32 +269,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="16dp">
+                    android:layout_marginBottom="20dp">
 
-                    <TextView
-                        android:text="OTOMATİK PROFİL"
-                        android:textSize="11sp"
-                        android:textColor="@color/accent_yellow"
-                        android:letterSpacing="0.1"
-                        android:textStyle="bold"
+                    <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:text="OTOMATİK PROFİL"
+                            android:textSize="8sp"
+                            android:textColor="@color/text_secondary"
+                            android:letterSpacing="0.2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:text="Pil ve şarj durumuna göre otomatik geçiş"
+                            android:textSize="13sp"
+                            android:textColor="@color/text_primary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchAuto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:thumbTint="@color/accent_yellow"
+                        app:thumbTint="@color/accent_cyan"
                         app:trackTint="@color/divider"/>
-
                 </LinearLayout>
 
                 <!-- Şarjda performans -->
@@ -168,7 +314,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
+                    android:layout_marginBottom="16dp">
 
                     <TextView
                         android:text="Şarjda performans profili"
@@ -186,89 +332,54 @@
                         app:trackTint="@color/divider"/>
                 </LinearLayout>
 
-                <!-- Düşük pil eşiği -->
-                <TextView
-                    android:text="Düşük pil eşiği (Pil Tasarrufu)"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/divider" android:layout_marginBottom="16dp"/>
 
+                <!-- Düşük pil eşiği -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
-                    <SeekBar
-                        android:id="@+id/seekLowBattery"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:max="50"
-                        android:progress="20"
-                        android:progressTint="@color/accent_green"
-                        android:thumbTint="@color/accent_green"/>
-
-                    <TextView
-                        android:id="@+id/tvLowBattery"
-                        android:text="%20"
-                        android:textSize="13sp"
-                        android:textColor="@color/accent_green"
-                        android:textStyle="bold"
-                        android:layout_marginStart="12dp"
-                        android:minWidth="40dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    android:layout_marginBottom="4dp">
+                    <TextView android:text="Düşük pil eşiği" android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:id="@+id/tvLowBattery" android:text="%20"
+                        android:textSize="14sp" android:textColor="@color/accent_green" android:textStyle="bold"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
+
+                <SeekBar android:id="@+id/seekLowBattery"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:max="50" android:progress="20"
+                    android:progressTint="@color/accent_green" android:thumbTint="@color/accent_green"
+                    android:layout_marginBottom="16dp"/>
 
                 <!-- Orta pil eşiği -->
-                <TextView
-                    android:text="Orta pil eşiği (Dengeli)"
-                    android:textSize="13sp"
-                    android:textColor="@color/text_primary"
-                    android:layout_marginBottom="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
-                    <SeekBar
-                        android:id="@+id/seekMidBattery"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:max="100"
-                        android:progress="50"
-                        android:progressTint="@color/accent_cyan"
-                        android:thumbTint="@color/accent_cyan"/>
-
-                    <TextView
-                        android:id="@+id/tvMidBattery"
-                        android:text="%50"
-                        android:textSize="13sp"
-                        android:textColor="@color/accent_cyan"
-                        android:textStyle="bold"
-                        android:layout_marginStart="12dp"
-                        android:minWidth="40dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                    android:layout_marginBottom="4dp">
+                    <TextView android:text="Orta pil eşiği" android:textSize="13sp"
+                        android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:id="@+id/tvMidBattery" android:text="%50"
+                        android:textSize="14sp" android:textColor="@color/accent_cyan" android:textStyle="bold"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/tvAutoStatus"
-                    android:text=""
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <SeekBar android:id="@+id/seekMidBattery"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:max="100" android:progress="50"
+                    android:progressTint="@color/accent_cyan" android:thumbTint="@color/accent_cyan"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView android:id="@+id/tvAutoStatus" android:text=""
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

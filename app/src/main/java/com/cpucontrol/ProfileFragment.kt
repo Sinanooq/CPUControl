@@ -20,6 +20,7 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tvActive        = view.findViewById<TextView>(R.id.tvActiveProfile)
+        val tvProfileStatus = view.findViewById<TextView>(R.id.tvProfileStatus)
         val btnPil          = view.findViewById<MaterialButton>(R.id.btnPilTasarrufu)
         val btnDengeli      = view.findViewById<MaterialButton>(R.id.btnDengeli)
         val btnPerformans   = view.findViewById<MaterialButton>(R.id.btnPerformans)
@@ -37,7 +38,7 @@ class ProfileFragment : Fragment() {
 
         // Mevcut aktif profili göster
         val active = prefs.getString("active_profile", "") ?: ""
-        tvActive.text = "Aktif: ${Profiles.isimler[active] ?: "—"}"
+        tvActive.text = Profiles.isimler[active] ?: "—"
 
         // Ayarları yükle
         switchAuto.isChecked     = prefs.getBoolean("auto_profile_enabled", false)
@@ -53,7 +54,7 @@ class ProfileFragment : Fragment() {
             scope.launch {
                 withContext(Dispatchers.IO) { Profiles.apply(Profiles.hepsi[key]!!) }
                 prefs.edit().putString("active_profile", key).apply()
-                tvActive.text = "Aktif: ${Profiles.isimler[key]}"
+                tvActive.text = Profiles.isimler[key] ?: "—"
                 btn.isEnabled = true
             }
         }

@@ -14,19 +14,19 @@ class GpuFragment : Fragment() {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val freqs = RootHelper.GPU_FREQS
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return inflater.inflate(R.layout.fragment_gpu, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        inflater.inflate(R.layout.fragment_gpu, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val tvCurMin  = view.findViewById<TextView>(R.id.tvGpuCurrentMin)
-        val tvCurMax  = view.findViewById<TextView>(R.id.tvGpuCurrentMax)
-        val tvMinSel  = view.findViewById<TextView>(R.id.tvGpuMinSelected)
-        val tvMaxSel  = view.findViewById<TextView>(R.id.tvGpuMaxSelected)
-        val seekMin   = view.findViewById<SeekBar>(R.id.seekGpuMin)
-        val seekMax   = view.findViewById<SeekBar>(R.id.seekGpuMax)
-        val btnApply  = view.findViewById<MaterialButton>(R.id.btnGpuApply)
-        val tvStatus  = view.findViewById<TextView>(R.id.tvGpuStatus)
+        val tvCurMin      = view.findViewById<TextView>(R.id.tvGpuCurrentMin)
+        val tvCurMax      = view.findViewById<TextView>(R.id.tvGpuCurrentMax)       // hero badge
+        val tvCurMaxSmall = view.findViewById<TextView>(R.id.tvGpuCurrentMaxSmall)  // küçük kutu
+        val tvMinSel      = view.findViewById<TextView>(R.id.tvGpuMinSelected)
+        val tvMaxSel      = view.findViewById<TextView>(R.id.tvGpuMaxSelected)
+        val seekMin       = view.findViewById<SeekBar>(R.id.seekGpuMin)
+        val seekMax       = view.findViewById<SeekBar>(R.id.seekGpuMax)
+        val btnApply      = view.findViewById<MaterialButton>(R.id.btnGpuApply)
+        val tvStatus      = view.findViewById<TextView>(R.id.tvGpuStatus)
 
         seekMin.max = freqs.size - 1
         seekMax.max = freqs.size - 1
@@ -35,7 +35,7 @@ class GpuFragment : Fragment() {
         val savedMin = prefs.getInt("gpu_min", freqs.first())
         val savedMax = prefs.getInt("gpu_max", freqs.last())
         val minIdx = freqs.indexOf(savedMin).coerceAtLeast(0)
-        val maxIdx = freqs.indexOf(savedMax).coerceAtLeast(freqs.size - 1)
+        val maxIdx = freqs.indexOf(savedMax).let { if (it < 0) freqs.size - 1 else it }
         seekMin.progress = minIdx
         seekMax.progress = maxIdx
         tvMinSel.text = "${freqs[minIdx] / 1000000} MHz"
@@ -65,37 +65,38 @@ class GpuFragment : Fragment() {
             val minFreq = freqs[seekMin.progress]
             val maxFreq = freqs[seekMax.progress]
             btnApply.isEnabled = false
-            tvStatus.text = "Applying..."
+            tvStatus.text = "Uygulanıyor..."
 
             scope.launch {
                 val ok = withContext(Dispatchers.IO) {
-                    val r1 = RootHelper.setGpuMinFreq(minFreq)
-                    val r2 = RootHelper.setGpuMaxFreq(maxFreq)
-                    r1 && r2
+                    RootHelper.setGpuMinFreq(minFreq) && RootHelper.setGpuMaxFreq(maxFreq)
                 }
                 btnApply.isEnabled = true
                 if (ok) {
                     prefs.edit().putInt("gpu_min", minFreq).putInt("gpu_max", maxFreq).apply()
-                    tvStatus.text = "Kaydedildi  •  ${minFreq / 1000000} – ${maxFreq / 1000000} MHz"
-                    tvStatus.setTextColor(requireContext().getColor(android.R.color.holo_green_dark))
+                    tvStatus.text = "Kaydedildi  ·  ${minFreq / 1000000} – ${maxFreq / 1000000} MHz"
+                    tvStatus.setTextColor(requireContext().getColor(R.color.accent_green))
                 } else {
                     tvStatus.text = "Uygulama başarısız"
-                    tvStatus.setTextColor(requireContext().getColor(android.R.color.holo_red_dark))
+                    tvStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
                 }
-                refreshCurrent(tvCurMin, tvCurMax)
+                refreshCurrent(tvCurMin, tvCurMax, tvCurMaxSmall)
             }
         }
 
-        refreshCurrent(tvCurMin, tvCurMax)
+        refreshCurrent(tvCurMin, tvCurMax, tvCurMaxSmall)
     }
 
-    private fun refreshCurrent(tvMin: TextView, tvMax: TextView) {
+    private fun refreshCurrent(tvMin: TextView, tvMax: TextView, tvMaxSmall: TextView) {
         scope.launch {
             val (min, max) = withContext(Dispatchers.IO) {
                 Pair(RootHelper.getGpuMinFreq(), RootHelper.getGpuMaxFreq())
             }
-            tvMin.text = if (min > 0) "${min / 1000000} MHz" else "N/A"
-            tvMax.text = if (max > 0) "${max / 1000000} MHz" else "N/A"
+            val minStr = if (min > 0) "${min / 1000000} MHz" else "N/A"
+            val maxStr = if (max > 0) "${max / 1000000} MHz" else "N/A"
+            tvMin.text = minStr
+            tvMax.text = maxStr
+            tvMaxSmall.text = maxStr
         }
     }
 

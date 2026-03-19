@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Koyu arka plan -->
+    <path
+        android:fillColor="#08090E"
+        android:pathData="M0,0h108v108h-108z"/>
+
+    <!-- Hafif gradient efekti için köşe parlaması -->
+    <path
+        android:fillColor="#0A1A2A"
+        android:pathData="M0,0 L60,0 L0,60 Z"/>
+
+</vector>
