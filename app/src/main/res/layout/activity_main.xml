@@ -86,8 +86,6 @@
         android:background="@color/bg_surface"
         app:itemIconTint="@color/text_secondary"
         app:itemTextColor="@color/text_secondary"
-        app:itemActiveIndicatorColor="@color/accent_cyan_dim"
-        app:itemRippleColor="@color/accent_cyan_dim"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
         app:elevation="0dp"/>

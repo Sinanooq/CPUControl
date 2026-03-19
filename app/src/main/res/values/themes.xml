@@ -15,9 +15,4 @@
         <item name="android:windowLightNavigationBar">@bool/is_light_theme</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
-
-    <!-- Chip / badge stili -->
-    <style name="Widget.CPUControl.Chip" parent="Widget.Material3.Chip.Suggestion">
-        <item name="android:textSize">11sp</item>
-    </style>
 </resources>
