@@ -80,21 +80,27 @@ class WifiShareService : Service() {
     }
 
     private fun onGroupCreated() {
-        // Grup bilgilerini al
         p2pManager.requestGroupInfo(p2pChannel) { group ->
             if (group == null) {
                 updateNotification("Grup bilgisi alınamadı")
                 return@requestGroupInfo
             }
-            groupSsid = group.networkName ?: ""
-            groupPass  = group.passphrase ?: ""
+            groupSsid    = group.networkName ?: ""
+            groupPass    = group.passphrase  ?: ""
             p2pInterface = group.`interface` ?: "p2p-wlan0-0"
 
-            // NAT kur
             scope.launch {
+                // 1. Interface'e IP ata (bazı cihazlarda otomatik atanmıyor)
+                RootHelper.runAsRoot("ip addr add 192.168.49.1/24 dev $p2pInterface 2>/dev/null || true")
+                RootHelper.runAsRoot("ip link set $p2pInterface up")
+
+                // 2. DHCP server başlat (dnsmasq)
+                RootHelper.startDnsmasq(p2pInterface)
+
+                // 3. NAT kur
                 val (ok, info) = RootHelper.startP2pNat(p2pInterface)
                 isRunning = ok
-                val msg = if (ok) "Aktif • $groupSsid • $p2pInterface"
+                val msg = if (ok) "Aktif • $groupSsid • şifre: $groupPass"
                           else "NAT kurulamadı: $info"
                 updateNotification(msg)
             }
@@ -103,6 +109,7 @@ class WifiShareService : Service() {
 
     private fun stopShare() {
         scope.launch {
+            RootHelper.stopDnsmasq()
             RootHelper.stopP2pNat(p2pInterface)
             isRunning = false
             p2pInterface = ""

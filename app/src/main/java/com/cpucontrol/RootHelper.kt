@@ -200,6 +200,22 @@ object RootHelper {
     // ── Root kontrolü ───────────────────────────────────────────────────────
     fun checkRoot(): Boolean = runAsRoot("id").first
 
+    fun startDnsmasq(iface: String): Boolean {
+        // Önce varsa öldür
+        runAsRoot("pkill -f dnsmasq 2>/dev/null || true")
+        // dnsmasq binary'sini bul
+        val bin = listOf("/system/bin/dnsmasq", "/system/xbin/dnsmasq", "/data/local/tmp/dnsmasq")
+            .firstOrNull { runAsRoot("test -x $it").first } ?: return false
+        val cmd = "$bin --interface=$iface " +
+                  "--dhcp-range=192.168.49.2,192.168.49.254,255.255.255.0,1h " +
+                  "--dhcp-option=3,192.168.49.1 " +
+                  "--dhcp-option=6,8.8.8.8,8.8.4.4 " +
+                  "--no-resolv --no-poll --keep-in-foreground &"
+        return runAsRoot(cmd).first
+    }
+
+    fun stopDnsmasq(): Boolean = runAsRoot("pkill -f dnsmasq 2>/dev/null || true").first
+
     // ── Tethering (NAT) ─────────────────────────────────────────────────────
     fun getUpstreamInterface(): String {
         // Mobil veri veya WiFi upstream interface'ini bul
