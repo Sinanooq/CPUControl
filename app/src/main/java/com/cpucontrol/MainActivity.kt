@@ -1,7 +1,6 @@
 package com.cpucontrol
 
 import android.os.Bundle
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -28,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // Kaydedilmiş tema tercihini uygula (Activity yeniden oluşturulmadan önce)
         val prefs = getSharedPreferences("cpu_prefs", MODE_PRIVATE)
         val isDark = prefs.getBoolean("dark_theme", true)
         AppCompatDelegate.setDefaultNightMode(
@@ -39,23 +37,23 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val viewPager       = findViewById<ViewPager2>(R.id.viewPager)
-        val bottomNav       = findViewById<BottomNavigationView>(R.id.bottomNav)
-        val tvRoot          = findViewById<TextView>(R.id.tvRootStatus)
-        val btnThemeToggle  = findViewById<ImageButton>(R.id.btnThemeToggle)
+        val viewPager = findViewById<ViewPager2>(R.id.viewPager)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        val tvRoot    = findViewById<TextView>(R.id.tvRootStatus)
 
-        // Tema toggle ikonunu güncelle
-        updateThemeIcon(btnThemeToggle, isDark)
-
-        btnThemeToggle.setOnClickListener {
-            val currentDark = prefs.getBoolean("dark_theme", true)
-            val newDark = !currentDark
-            prefs.edit().putBoolean("dark_theme", newDark).apply()
-            AppCompatDelegate.setDefaultNightMode(
-                if (newDark) AppCompatDelegate.MODE_NIGHT_YES
-                else AppCompatDelegate.MODE_NIGHT_NO
+        // Tema toggle — layout'ta varsa bağla, yoksa sessizce geç
+        findViewById<android.widget.ImageButton>(R.id.btnThemeToggle)?.let { btn ->
+            btn.setImageResource(
+                if (isDark) R.drawable.ic_theme_light else R.drawable.ic_theme_dark
             )
-            // Activity otomatik yeniden oluşturulur, ikon güncellenir
+            btn.setOnClickListener {
+                val newDark = !prefs.getBoolean("dark_theme", true)
+                prefs.edit().putBoolean("dark_theme", newDark).apply()
+                AppCompatDelegate.setDefaultNightMode(
+                    if (newDark) AppCompatDelegate.MODE_NIGHT_YES
+                    else AppCompatDelegate.MODE_NIGHT_NO
+                )
+            }
         }
 
         viewPager.adapter = object : FragmentStateAdapter(this) {
@@ -83,14 +81,6 @@ class MainActivity : AppCompatActivity() {
             tvRoot.setTextColor(getColor(
                 if (ok) R.color.accent_green else R.color.accent_orange))
         }
-    }
-
-    private fun updateThemeIcon(btn: ImageButton, isDark: Boolean) {
-        // Karanlık moddayken "aydınlığa geç" (güneş), aydınlık moddayken "karanlığa geç" (ay)
-        btn.setImageResource(
-            if (isDark) R.drawable.ic_theme_light
-            else R.drawable.ic_theme_dark
-        )
     }
 
     override fun onDestroy() {
