@@ -25,11 +25,18 @@ class ScreenTimeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val btnGrant      = view.findViewById<MaterialButton>(R.id.btnGrantUsage)
+        val btnResetCharge = view.findViewById<MaterialButton>(R.id.btnResetCharge)
         val layoutPerm    = view.findViewById<View>(R.id.layoutPermission)
         val layoutContent = view.findViewById<View>(R.id.layoutContent)
 
         btnGrant.setOnClickListener {
             startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+        }
+
+        btnResetCharge.setOnClickListener {
+            val p = requireContext().getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
+            p.edit().putLong("charge_start_time", System.currentTimeMillis()).apply()
+            loadData(view)
         }
 
         if (!hasUsagePermission()) {

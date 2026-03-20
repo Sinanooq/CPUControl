@@ -1,6 +1,9 @@
 package com.cpucontrol
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +17,16 @@ import kotlinx.coroutines.*
 class MainActivity : AppCompatActivity() {
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
+    // Şarj takılınca charge_start_time'ı güncelle (Android 8+ statik receiver almıyor)
+    private val powerReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action == Intent.ACTION_POWER_CONNECTED) {
+                getSharedPreferences("cpu_prefs", MODE_PRIVATE)
+                    .edit().putLong("charge_start_time", System.currentTimeMillis()).apply()
+            }
+        }
+    }
 
     private val fragments = listOf(
         { HomeFragment()    as Fragment },
@@ -86,10 +99,14 @@ class MainActivity : AppCompatActivity() {
             tvRoot.setTextColor(getColor(
                 if (ok) R.color.accent_green else R.color.accent_orange))
         }
+
+        // Şarj receiver'ı dinamik register et
+        registerReceiver(powerReceiver, IntentFilter(Intent.ACTION_POWER_CONNECTED))
     }
 
     override fun onDestroy() {
         super.onDestroy()
         scope.cancel()
+        runCatching { unregisterReceiver(powerReceiver) }
     }
 }
