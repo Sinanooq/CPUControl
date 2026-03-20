@@ -15,95 +15,6 @@
         android:paddingTop="12dp"
         android:paddingBottom="28dp">
 
-        <!-- ── TETHERING ── -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="@color/bg_card"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/divider"
-            app:strokeWidth="1dp">
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="22dp">
-
-                <TextView android:text="İNTERNET PAYLAŞIMI" android:textSize="9sp"
-                    android:textColor="@color/accent_green" android:textStyle="bold"
-                    android:letterSpacing="0.15" android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:layout_marginBottom="18dp"/>
-
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:layout_marginBottom="10dp">
-
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:text="WiFi Hotspot Paylaşımı" android:textSize="15sp"
-                            android:textStyle="bold" android:textColor="@color/text_primary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        <TextView android:text="Root ile hotspot aç, bağlanan cihazlar VPN olmadan internet alır"
-                            android:textSize="12sp" android:textColor="@color/text_secondary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"/>
-                    </LinearLayout>
-
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchTethering"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginBottom="14dp"
-                    android:layout_marginTop="4dp"/>
-
-                <!-- SSID -->
-                <TextView android:text="Ağ Adı (SSID)"
-                    android:textSize="12sp" android:textColor="@color/text_secondary"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"/>
-                <EditText android:id="@+id/etShareSsid"
-                    android:layout_width="match_parent" android:layout_height="52dp"
-                    android:hint="CPUControl"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
-                    android:background="@color/bg_elevated"
-                    android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:inputType="text"
-                    android:layout_marginBottom="10dp"/>
-
-                <!-- Şifre -->
-                <TextView android:text="Şifre (min 8 karakter)"
-                    android:textSize="12sp" android:textColor="@color/text_secondary"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"/>
-                <EditText android:id="@+id/etSharePass"
-                    android:layout_width="match_parent" android:layout_height="52dp"
-                    android:hint="cpucontrol123"
-                    android:textColor="@color/text_primary"
-                    android:textColorHint="@color/text_secondary"
-                    android:background="@color/bg_elevated"
-                    android:paddingStart="16dp" android:paddingEnd="16dp"
-                    android:inputType="textPassword"
-                    android:layout_marginBottom="14dp"/>
-
-                <TextView android:id="@+id/tvTetheringInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="11sp"
-                    android:textColor="@color/text_secondary"
-                    android:fontFamily="monospace"
-                    android:layout_marginBottom="4dp"/>
-
-                <TextView android:id="@+id/tvTetheringStatus"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
         <!-- ── TCP ── -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -126,7 +37,6 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:gravity="center_vertical"
                     android:layout_marginBottom="18dp">
-
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
                         <TextView android:text="BBR Congestion Control" android:textSize="15sp"
@@ -137,7 +47,6 @@
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"/>
                     </LinearLayout>
-
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchTcp"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
@@ -148,7 +57,6 @@
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:gravity="center_vertical">
-
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
                         <TextView android:text="Düşük Gecikme Modu" android:textSize="15sp"
@@ -159,7 +67,6 @@
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"/>
                     </LinearLayout>
-
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchLowLatency"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
@@ -188,7 +95,6 @@
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:gravity="center_vertical">
-
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
                         <TextView android:text="WiFi Güç Tasarrufu Kapat" android:textSize="15sp"
@@ -199,7 +105,6 @@
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"/>
                     </LinearLayout>
-
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchWifiPowerSave"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
@@ -229,11 +134,9 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:gravity="center_vertical"
                     android:layout_marginBottom="12dp">
-
                     <TextView android:text="Hedef" android:textSize="13sp"
                         android:textColor="@color/text_secondary"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
                     <TextView android:id="@+id/tvRefreshRate" android:text="90 Hz"
                         android:textSize="26sp" android:textStyle="bold"
                         android:textColor="@color/accent_yellow"
@@ -259,130 +162,6 @@
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:gravity="center" android:textSize="12sp"
                     android:textColor="@color/text_secondary" android:layout_marginTop="10dp"/>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- ── HOTSPOT GİZLEME ── -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="@color/bg_card"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/divider"
-            app:strokeWidth="1dp">
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="22dp">
-
-                <TextView android:text="HOTSPOT GİZLEME" android:textSize="9sp"
-                    android:textColor="@color/accent_pink" android:textStyle="bold"
-                    android:letterSpacing="0.15" android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:layout_marginBottom="4dp"/>
-
-                <TextView android:text="Operatörün hotspot tespitini engelleyen ek katmanlar"
-                    android:textSize="12sp" android:textColor="@color/text_secondary"
-                    android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:layout_marginBottom="18dp"/>
-
-                <!-- TCP MSS Clamping -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:text="TCP MSS Clamping" android:textSize="15sp"
-                            android:textStyle="bold" android:textColor="@color/text_primary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        <TextView android:text="Hotspot cihazlarının MSS farkını gizler (1452)"
-                            android:textSize="12sp" android:textColor="@color/text_secondary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"/>
-                    </LinearLayout>
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchMss"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginBottom="14dp"/>
-
-                <!-- DSCP Sıfırlama -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:text="DSCP/TOS Sıfırlama" android:textSize="15sp"
-                            android:textStyle="bold" android:textColor="@color/text_primary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        <TextView android:text="Paket öncelik alanını sıfırlar, DPI tespitini zorlaştırır"
-                            android:textSize="12sp" android:textColor="@color/text_secondary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"/>
-                    </LinearLayout>
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchDscp"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginBottom="14dp"/>
-
-                <!-- Tethering Flag Gizleme -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical"
-                    android:layout_marginBottom="14dp">
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:text="Tethering Flag Gizle" android:textSize="15sp"
-                            android:textStyle="bold" android:textColor="@color/text_primary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        <TextView android:text="Android sistem property'lerindeki tethering işaretini sıfırlar"
-                            android:textSize="12sp" android:textColor="@color/text_secondary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"/>
-                    </LinearLayout>
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchTetherFlag"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginBottom="14dp"/>
-
-                <!-- IPv6 Kapat -->
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:gravity="center_vertical">
-                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-                        android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:text="IPv6 Kapat" android:textSize="15sp"
-                            android:textStyle="bold" android:textColor="@color/text_primary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        <TextView android:text="IPv6 üzerinden yapılan hotspot tespitini engeller"
-                            android:textSize="12sp" android:textColor="@color/text_secondary"
-                            android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:layout_marginTop="3dp"/>
-                    </LinearLayout>
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchIpv6Disable"
-                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <TextView android:id="@+id/tvHotspotHideStatus"
-                    android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:gravity="center" android:textSize="12sp"
-                    android:textColor="@color/text_secondary" android:layout_marginTop="14dp"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnFixTether"
-                    android:layout_width="match_parent" android:layout_height="48dp"
-                    android:text="Sistem Hotspot'u Onar"
-                    android:textColor="@android:color/black"
-                    android:backgroundTint="@color/accent_orange"
-                    app:cornerRadius="14dp"
-                    android:layout_marginTop="10dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -413,7 +192,6 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:gravity="center_vertical"
                     android:layout_marginBottom="14dp">
-
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
                         <TextView android:text="TTL Sabitle" android:textSize="15sp"
@@ -424,13 +202,11 @@
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"/>
                     </LinearLayout>
-
                     <com.google.android.material.switchmaterial.SwitchMaterial
                         android:id="@+id/switchTtl"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <!-- TTL değer seçimi -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:layout_marginBottom="10dp">
 
@@ -490,12 +266,10 @@
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:gravity="center_vertical"
                     android:layout_marginBottom="6dp">
-
                     <TextView android:text="DNS DEĞİŞTİRİCİ" android:textSize="9sp"
                         android:textColor="@color/accent_cyan" android:textStyle="bold"
                         android:letterSpacing="0.15" android:layout_width="0dp"
                         android:layout_height="wrap_content" android:layout_weight="1"/>
-
                     <TextView android:id="@+id/tvCurrentDns" android:text="Mevcut DNS: —"
                         android:textSize="11sp" android:textColor="@color/text_secondary"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
@@ -506,10 +280,8 @@
                     android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:layout_marginBottom="18dp"/>
 
-                <!-- Hızlı DNS butonları -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:layout_marginBottom="10dp">
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnDnsCloudflare"
                         android:layout_width="0dp" android:layout_height="44dp"
@@ -517,7 +289,6 @@
                         android:textSize="12sp" android:textColor="@color/accent_cyan"
                         android:backgroundTint="@color/accent_cyan_dim"
                         app:cornerRadius="12dp" android:layout_marginEnd="6dp"/>
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnDnsGoogle"
                         android:layout_width="0dp" android:layout_height="44dp"
@@ -529,7 +300,6 @@
 
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal" android:layout_marginBottom="16dp">
-
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnDnsAdguard"
                         android:layout_width="0dp" android:layout_height="44dp"
@@ -537,12 +307,10 @@
                         android:textSize="12sp" android:textColor="@color/accent_purple"
                         android:backgroundTint="@color/accent_purple_dim"
                         app:cornerRadius="12dp" android:layout_marginEnd="6dp"/>
-
                     <View android:layout_width="0dp" android:layout_height="0dp"
                         android:layout_weight="1"/>
                 </LinearLayout>
 
-                <!-- Özel DNS -->
                 <EditText android:id="@+id/etCustomDns"
                     android:layout_width="match_parent" android:layout_height="52dp"
                     android:hint="Özel DNS (örn: 1.1.1.1)"

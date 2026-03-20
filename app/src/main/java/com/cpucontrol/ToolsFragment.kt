@@ -21,13 +21,14 @@ class ToolsFragment : Fragment() {
         val viewPager = view.findViewById<ViewPager2>(R.id.viewPagerTools)
 
         viewPager.adapter = object : FragmentStateAdapter(this) {
-            override fun getItemCount() = 5
+            override fun getItemCount() = 6
             override fun createFragment(position: Int): Fragment = when (position) {
                 0 -> BatteryFragment()
                 1 -> NetworkFragment()
                 2 -> AudioFragment()
                 3 -> DozeFragment()
-                else -> RamFragment()
+                4 -> RamFragment()
+                else -> ScreenTimeFragment()
             }
         }
 
@@ -37,7 +38,8 @@ class ToolsFragment : Fragment() {
                 1 -> "Ağ"
                 2 -> "Ses"
                 3 -> "Doze"
-                else -> "RAM"
+                4 -> "RAM"
+                else -> "Ekran"
             }
         }.attach()
     }

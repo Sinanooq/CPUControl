@@ -36,11 +36,6 @@ class BootReceiver : BroadcastReceiver() {
                 val ttl = p.getInt("ttl_value", 64)
                 RootHelper.setTtl(ttl)
             }
-            // Hotspot gizleme restore
-            if (p.getBoolean("mss_clamp", false))   RootHelper.applyMssClamping()
-            if (p.getBoolean("dscp_zero", false))    RootHelper.applyDscpZero()
-            if (p.getBoolean("tether_flag", false))  RootHelper.hideTetherFlags()
-            if (p.getBoolean("ipv6_disable", false)) RootHelper.setIpv6Disabled(true)
         }
     }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="12dp">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:layout_marginBottom="5dp">
+
+        <TextView android:id="@+id/tvAppName"
+            android:layout_width="0dp" android:layout_height="wrap_content"
+            android:layout_weight="1" android:textSize="13sp"
+            android:textColor="@color/text_primary" android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <TextView android:id="@+id/tvAppTime"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:textSize="12sp" android:textColor="@color/accent_purple"
+            android:textStyle="bold"/>
+    </LinearLayout>
+
+    <!-- Kullanım çubuğu -->
+    <View android:id="@+id/viewUsageBar"
+        android:layout_width="match_parent" android:layout_height="4dp"
+        android:background="@color/accent_purple"
+        android:alpha="0.7"/>
+
+</LinearLayout>

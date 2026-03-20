@@ -1,9 +1,5 @@
 package com.cpucontrol
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,98 +8,18 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.button.MaterialButton
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 
 class NetworkFragment : Fragment() {
 
-    private fun checkAndStartShare() {
-        startWifiShare()
-    }
-
-    private fun startWifiShare() {
-        val ctx    = requireContext()
-        val etSsid = view?.findViewById<EditText>(R.id.etShareSsid) ?: return
-        val etPass = view?.findViewById<EditText>(R.id.etSharePass) ?: return
-        val ssid   = etSsid.text.toString().trim().ifEmpty { "CPUControl" }
-        val pass   = etPass.text.toString().trim().ifEmpty { "cpucontrol123" }
-        ctx.getSharedPreferences("cpu_prefs", 0)
-            .edit().putString("share_ssid", ssid).putString("share_pass", pass).apply()
-        ctx.startForegroundService(
-            Intent(ctx, WifiShareService::class.java)
-                .setAction(WifiShareService.ACTION_START)
-                .putExtra(WifiShareService.EXTRA_SSID, ssid)
-                .putExtra(WifiShareService.EXTRA_PASS, pass)
-        )
-        tvTetheringStatus.text = "Başlatılıyor..."
-        tvTetheringStatus.setTextColor(ctx.getColor(R.color.text_secondary))
-    }
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val refreshRates = listOf(60, 90, 120)
-
-    private lateinit var switchTethering: SwitchMaterial
-    private lateinit var tvTetheringInfo: TextView
-    private lateinit var tvTetheringStatus: TextView
-
-    private val shareReceiver = object : BroadcastReceiver() {
-        override fun onReceive(ctx: Context, intent: Intent) {
-            val status = intent.getStringExtra(WifiShareService.EXTRA_STATUS) ?: return
-            val msg    = intent.getStringExtra(WifiShareService.EXTRA_MSG) ?: ""
-            when (status) {
-                "running" -> {
-                    switchTethering.isChecked = true
-                    tvTetheringInfo.text = "SSID: ${WifiShareService.groupSsid}  •  Şifre: ${WifiShareService.groupPass}"
-                    tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik internet alır"
-                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
-                }
-                "error" -> {
-                    switchTethering.isChecked = false
-                    tvTetheringInfo.text = ""
-                    tvTetheringStatus.text = "Hata: $msg"
-                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
-                }
-                "stopped" -> {
-                    switchTethering.isChecked = false
-                    tvTetheringInfo.text = ""
-                    tvTetheringStatus.text = "Durduruldu"
-                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
-                }
-            }
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_network, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        switchTethering   = view.findViewById(R.id.switchTethering)
-        tvTetheringInfo   = view.findViewById(R.id.tvTetheringInfo)
-        tvTetheringStatus = view.findViewById(R.id.tvTetheringStatus)
-        val etSsid = view.findViewById<EditText>(R.id.etShareSsid)
-        val etPass = view.findViewById<EditText>(R.id.etSharePass)
-        val prefs  = requireContext().getSharedPreferences("cpu_prefs", 0)
-
-        etSsid.setText(prefs.getString("share_ssid", "CPUControl"))
-        etPass.setText(prefs.getString("share_pass", "cpucontrol123"))
-
-        if (WifiShareService.isRunning) {
-            switchTethering.isChecked = true
-            tvTetheringInfo.text = "SSID: ${WifiShareService.groupSsid}  •  Şifre: ${WifiShareService.groupPass}"
-            tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik internet alır"
-            tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
-        }
-
-        switchTethering.setOnCheckedChangeListener { _, checked ->
-            val ctx = requireContext()
-            if (checked) {
-                checkAndStartShare()
-            } else {
-                ctx.startService(Intent(ctx, WifiShareService::class.java).setAction(WifiShareService.ACTION_STOP))
-            }
-        }
-
-        LocalBroadcastManager.getInstance(requireContext())
-            .registerReceiver(shareReceiver, IntentFilter(WifiShareService.BROADCAST_STATUS))
+        val prefs = requireContext().getSharedPreferences("cpu_prefs", 0)
 
         val switchTcp        = view.findViewById<SwitchMaterial>(R.id.switchTcp)
         val switchLowLatency = view.findViewById<SwitchMaterial>(R.id.switchLowLatency)
@@ -114,7 +30,6 @@ class NetworkFragment : Fragment() {
         val btnRefresh       = view.findViewById<MaterialButton>(R.id.btnApplyRefresh)
         val tvRefreshStatus  = view.findViewById<TextView>(R.id.tvRefreshStatus)
 
-        // DNS view'ları
         val tvCurrentDns     = view.findViewById<TextView>(R.id.tvCurrentDns)
         val btnDnsCloudflare = view.findViewById<MaterialButton>(R.id.btnDnsCloudflare)
         val btnDnsGoogle     = view.findViewById<MaterialButton>(R.id.btnDnsGoogle)
@@ -123,7 +38,6 @@ class NetworkFragment : Fragment() {
         val etCustomDns      = view.findViewById<EditText>(R.id.etCustomDns)
         val tvDnsStatus      = view.findViewById<TextView>(R.id.tvDnsStatus)
 
-        // TCP durumunu oku
         scope.launch {
             val cong = withContext(Dispatchers.IO) { RootHelper.getTcpCongestion() }
             tvCongestion.text = "Mevcut: $cong"
@@ -165,16 +79,13 @@ class NetworkFragment : Fragment() {
             }
         }
 
-        // Yenileme hızı
         val savedRate = prefs.getInt("refresh_rate", 90)
         val savedIdx  = refreshRates.indexOf(savedRate).coerceAtLeast(0)
         seekRefresh.progress = savedIdx
         tvRefresh.text = "${refreshRates[savedIdx]} Hz"
 
         seekRefresh.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(sb: SeekBar, p: Int, fromUser: Boolean) {
-                tvRefresh.text = "${refreshRates[p]} Hz"
-            }
+            override fun onProgressChanged(sb: SeekBar, p: Int, fromUser: Boolean) { tvRefresh.text = "${refreshRates[p]} Hz" }
             override fun onStartTrackingTouch(sb: SeekBar) {}
             override fun onStopTrackingTouch(sb: SeekBar) {}
         })
@@ -196,7 +107,6 @@ class NetworkFragment : Fragment() {
             }
         }
 
-        // DNS — mevcut DNS'i oku
         loadCurrentDns(tvCurrentDns)
 
         fun applyDns(dns1: String, dns2: String) {
@@ -216,81 +126,12 @@ class NetworkFragment : Fragment() {
         btnDnsCloudflare.setOnClickListener { applyDns("1.1.1.1", "1.0.0.1") }
         btnDnsGoogle.setOnClickListener     { applyDns("8.8.8.8", "8.8.4.4") }
         btnDnsAdguard.setOnClickListener    { applyDns("94.140.14.14", "94.140.15.15") }
-
         btnDnsCustom.setOnClickListener {
             val custom = etCustomDns.text.toString().trim()
-            if (custom.isNotEmpty()) {
-                applyDns(custom, custom)
-            } else {
+            if (custom.isNotEmpty()) applyDns(custom, custom)
+            else {
                 tvDnsStatus.text = "Geçerli bir DNS adresi girin"
                 tvDnsStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
-            }
-        }
-
-        // Hotspot Gizleme
-        val switchMss         = view.findViewById<SwitchMaterial>(R.id.switchMss)
-        val switchDscp        = view.findViewById<SwitchMaterial>(R.id.switchDscp)
-        val switchTetherFlag  = view.findViewById<SwitchMaterial>(R.id.switchTetherFlag)
-        val switchIpv6Disable = view.findViewById<SwitchMaterial>(R.id.switchIpv6Disable)
-        val tvHotspotStatus   = view.findViewById<TextView>(R.id.tvHotspotHideStatus)
-        val btnFixTether      = view.findViewById<MaterialButton>(R.id.btnFixTether)
-
-        btnFixTether.setOnClickListener {
-            scope.launch {
-                withContext(Dispatchers.IO) {
-                    RootHelper.runAsRoot("settings put global tether_supported 1")
-                    RootHelper.runAsRoot("settings put global wifi_saved_state 1")
-                }
-                tvHotspotStatus.text = "Hotspot onarıldı — sistem hotspot'u tekrar açılabilir"
-                tvHotspotStatus.setTextColor(requireContext().getColor(R.color.accent_green))
-            }
-        }
-
-        switchMss.isChecked = prefs.getBoolean("mss_clamp", false)
-        switchMss.setOnCheckedChangeListener { _, checked ->
-            scope.launch {
-                val ok = withContext(Dispatchers.IO) {
-                    if (checked) RootHelper.applyMssClamping() else RootHelper.resetMssClamping()
-                }
-                prefs.edit().putBoolean("mss_clamp", checked && ok).apply()
-                tvHotspotStatus.text = if (ok) "Uygulandı" else "Başarısız — root gerekli"
-                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
-                if (!ok) switchMss.isChecked = false
-            }
-        }
-
-        switchDscp.isChecked = prefs.getBoolean("dscp_zero", false)
-        switchDscp.setOnCheckedChangeListener { _, checked ->
-            scope.launch {
-                val ok = withContext(Dispatchers.IO) {
-                    if (checked) RootHelper.applyDscpZero() else RootHelper.resetDscpZero()
-                }
-                prefs.edit().putBoolean("dscp_zero", checked && ok).apply()
-                tvHotspotStatus.text = if (ok) "Uygulandı" else "Başarısız — root gerekli"
-                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
-                if (!ok) switchDscp.isChecked = false
-            }
-        }
-
-        switchTetherFlag.isChecked = prefs.getBoolean("tether_flag", false)
-        switchTetherFlag.setOnCheckedChangeListener { _, checked ->
-            scope.launch {
-                val ok = withContext(Dispatchers.IO) { if (checked) RootHelper.hideTetherFlags() else true }
-                prefs.edit().putBoolean("tether_flag", checked && ok).apply()
-                tvHotspotStatus.text = if (ok) "Uygulandı" else "Başarısız — root gerekli"
-                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
-                if (!ok) switchTetherFlag.isChecked = false
-            }
-        }
-
-        switchIpv6Disable.isChecked = prefs.getBoolean("ipv6_disable", false)
-        switchIpv6Disable.setOnCheckedChangeListener { _, checked ->
-            scope.launch {
-                val ok = withContext(Dispatchers.IO) { RootHelper.setIpv6Disabled(checked) }
-                prefs.edit().putBoolean("ipv6_disable", checked && ok).apply()
-                tvHotspotStatus.text = if (ok) if (checked) "IPv6 kapatıldı" else "IPv6 açıldı" else "Başarısız — root gerekli"
-                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
-                if (!ok) switchIpv6Disable.isChecked = false
             }
         }
 
@@ -333,8 +174,7 @@ class NetworkFragment : Fragment() {
         switchTtl.setOnCheckedChangeListener { _, checked ->
             scope.launch {
                 val ok = withContext(Dispatchers.IO) {
-                    if (checked) RootHelper.setTtl(selectedTtl)
-                    else RootHelper.resetTtl()
+                    if (checked) RootHelper.setTtl(selectedTtl) else RootHelper.resetTtl()
                 }
                 prefs.edit().putBoolean("ttl_fix", checked && ok).apply()
                 if (ok) {
@@ -361,7 +201,6 @@ class NetworkFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(shareReceiver)
         scope.cancel()
     }
 }

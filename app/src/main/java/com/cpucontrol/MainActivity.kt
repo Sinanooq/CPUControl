@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
                     if (newDark) AppCompatDelegate.MODE_NIGHT_YES
                     else AppCompatDelegate.MODE_NIGHT_NO
                 )
+                recreate()
             }
         }
 
