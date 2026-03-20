@@ -232,6 +232,7 @@ class NetworkFragment : Fragment() {
         val tvTtlCurrent = view.findViewById<TextView>(R.id.tvTtlCurrent)
         val tvTtlStatus  = view.findViewById<TextView>(R.id.tvTtlStatus)
         val btnTtl64     = view.findViewById<MaterialButton>(R.id.btnTtl64)
+        val btnTtl65     = view.findViewById<MaterialButton>(R.id.btnTtl65)
         val btnTtl128    = view.findViewById<MaterialButton>(R.id.btnTtl128)
         val btnTtl255    = view.findViewById<MaterialButton>(R.id.btnTtl255)
 
@@ -241,6 +242,7 @@ class NetworkFragment : Fragment() {
             val activeColor   = requireContext().getColor(R.color.accent_orange)
             val inactiveColor = requireContext().getColor(R.color.accent_orange_dim)
             btnTtl64.backgroundTintList  = android.content.res.ColorStateList.valueOf(if (selectedTtl == 64)  activeColor else inactiveColor)
+            btnTtl65.backgroundTintList  = android.content.res.ColorStateList.valueOf(if (selectedTtl == 65)  activeColor else inactiveColor)
             btnTtl128.backgroundTintList = android.content.res.ColorStateList.valueOf(if (selectedTtl == 128) activeColor else inactiveColor)
             btnTtl255.backgroundTintList = android.content.res.ColorStateList.valueOf(if (selectedTtl == 255) activeColor else inactiveColor)
         }
@@ -257,6 +259,7 @@ class NetworkFragment : Fragment() {
         loadTtl()
 
         btnTtl64.setOnClickListener  { selectedTtl = 64;  prefs.edit().putInt("ttl_value", 64).apply();  updateTtlButtonStates() }
+        btnTtl65.setOnClickListener  { selectedTtl = 65;  prefs.edit().putInt("ttl_value", 65).apply();  updateTtlButtonStates() }
         btnTtl128.setOnClickListener { selectedTtl = 128; prefs.edit().putInt("ttl_value", 128).apply(); updateTtlButtonStates() }
         btnTtl255.setOnClickListener { selectedTtl = 255; prefs.edit().putInt("ttl_value", 255).apply(); updateTtlButtonStates() }
 
