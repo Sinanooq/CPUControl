@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.net.wifi.WifiManager
 import android.net.wifi.p2p.WifiP2pConfig
 import android.net.wifi.p2p.WifiP2pManager
 import android.net.wifi.p2p.WifiP2pManager.ActionListener
@@ -20,23 +21,24 @@ import kotlinx.coroutines.*
 class WifiShareService : Service() {
 
     companion object {
-        const val ACTION_START   = "START"
-        const val ACTION_STOP    = "STOP"
-        const val EXTRA_SSID     = "ssid"
-        const val EXTRA_PASS     = "pass"
-        const val CHANNEL_ID     = "wifi_share"
-        const val NOTIF_ID       = 42
+        const val ACTION_START     = "START"
+        const val ACTION_STOP      = "STOP"
+        const val EXTRA_SSID       = "ssid"
+        const val EXTRA_PASS       = "pass"
+        const val CHANNEL_ID       = "wifi_share"
+        const val NOTIF_ID         = 42
         const val BROADCAST_STATUS = "com.cpucontrol.WIFI_SHARE_STATUS"
-        const val EXTRA_STATUS   = "status"   // "running", "stopped", "error"
-        const val EXTRA_MSG      = "msg"
+        const val EXTRA_STATUS     = "status"
+        const val EXTRA_MSG        = "msg"
 
         var isRunning    = false
         var p2pInterface = ""
         var groupSsid    = ""
         var groupPass    = ""
+        var lastError    = ""
     }
 
-    private val scope      = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val scope       = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val mainHandler = Handler(Looper.getMainLooper())
     private lateinit var p2pManager: WifiP2pManager
     private lateinit var p2pChannel: WifiP2pManager.Channel
@@ -44,6 +46,7 @@ class WifiShareService : Service() {
 
     private var pendingSsid = ""
     private var pendingPass = ""
+    private var retryCount  = 0
 
     override fun onCreate() {
         super.onCreate()
@@ -58,6 +61,7 @@ class WifiShareService : Service() {
             ACTION_START -> {
                 pendingSsid = intent.getStringExtra(EXTRA_SSID) ?: "CPUControl"
                 pendingPass = intent.getStringExtra(EXTRA_PASS) ?: "cpucontrol123"
+                retryCount  = 0
                 startShare()
             }
             ACTION_STOP -> stopShare()
@@ -67,61 +71,76 @@ class WifiShareService : Service() {
 
     private fun startShare() {
         startForeground(NOTIF_ID, buildNotification("Başlatılıyor..."))
-        mainHandler.post {
-            // Önce P2P'yi tamamen sıfırla
-            p2pManager.cancelConnect(p2pChannel, object : ActionListener {
-                override fun onSuccess() { removeGroupThenCreate() }
-                override fun onFailure(r: Int) { removeGroupThenCreate() }
-            })
+        scope.launch {
+            updateNotification("P2P grubu oluşturuluyor...")
+            // Önce root/wpa_cli ile dene (en güvenilir yol)
+            val (wpaOk, wpaIface) = RootHelper.wpaCliCreateGroup(pendingSsid, pendingPass)
+            if (wpaOk && wpaIface.isNotEmpty()) {
+                // wpa_cli başarılı — SSID/şifreyi wpa_cli'den oku
+                val (_, ssidOut) = RootHelper.runAsRoot("wpa_cli -i ${RootHelper.getWlanInterface()} p2p_group_status | grep ssid | head -1")
+                val (_, passOut) = RootHelper.runAsRoot("wpa_cli -i ${RootHelper.getWlanInterface()} p2p_group_status | grep psk | head -1")
+                val ssid = ssidOut.substringAfter("=").trim().ifEmpty { "DIRECT-${pendingSsid}" }
+                val pass = passOut.substringAfter("=").trim().ifEmpty { pendingPass }
+                applyNat(ssid, pass, wpaIface)
+            } else {
+                // wpa_cli yoksa WifiP2pManager API'sine düş
+                mainHandler.post { initChannelAndCreate() }
+            }
         }
     }
 
-    private fun reinitChannel() {
+    private fun initChannelAndCreate() {
         try { p2pChannel.close() } catch (_: Exception) {}
         p2pChannel = p2pManager.initialize(this, mainLooper, null)
+        mainHandler.postDelayed({ removeAndCreate() }, 300)
     }
 
-    private fun removeGroupThenCreate() {
-        reinitChannel()
+    private fun removeAndCreate() {
         p2pManager.removeGroup(p2pChannel, object : ActionListener {
-            override fun onSuccess() { mainHandler.postDelayed({ createGroup() }, 800) }
-            override fun onFailure(r: Int) { mainHandler.postDelayed({ createGroup() }, 800) }
+            override fun onSuccess() { mainHandler.postDelayed({ createGroup() }, 600) }
+            override fun onFailure(r: Int) { mainHandler.postDelayed({ createGroup() }, 600) }
         })
     }
 
     private fun createGroup() {
         updateNotification("WiFi Direct grubu oluşturuluyor...")
+
+        val listener = object : ActionListener {
+            override fun onSuccess() {
+                mainHandler.postDelayed({ fetchGroupInfo() }, 1500)
+            }
+            override fun onFailure(r: Int) {
+                if (retryCount < 2) {
+                    retryCount++
+                    updateNotification("Yeniden deneniyor ($retryCount/2)...")
+                    // Channel'ı yenile ve tekrar dene
+                    mainHandler.postDelayed({ initChannelAndCreate() }, 1500)
+                } else {
+                    onError("Grup oluşturulamadı (kod $r) — WiFi Direct destekleniyor mu?")
+                }
+            }
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val ssid = if (pendingSsid.startsWith("DIRECT-")) pendingSsid else "DIRECT-${pendingSsid}"
-            val config = WifiP2pConfig.Builder()
-                .setNetworkName(ssid)
-                .setPassphrase(pendingPass)
-                .build()
-            p2pManager.createGroup(p2pChannel, config, object : ActionListener {
-                override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
-                override fun onFailure(r: Int) {
-                    // Özel config başarısız → channel yenile + varsayılan ile dene
-                    mainHandler.postDelayed({
-                        reinitChannel()
-                        p2pManager.createGroup(p2pChannel, object : ActionListener {
-                            override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
-                            override fun onFailure(r2: Int) { onError("Grup oluşturulamadı (kod $r2) — WiFi açık mı?") }
-                        })
-                    }, 1000)
-                }
-            })
+            try {
+                val config = WifiP2pConfig.Builder()
+                    .setNetworkName(ssid)
+                    .setPassphrase(pendingPass)
+                    .build()
+                p2pManager.createGroup(p2pChannel, config, listener)
+            } catch (e: Exception) {
+                // Config oluşturulamadıysa varsayılan ile dene
+                p2pManager.createGroup(p2pChannel, listener)
+            }
         } else {
-            p2pManager.createGroup(p2pChannel, object : ActionListener {
-                override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
-                override fun onFailure(r: Int) { onError("Grup oluşturulamadı (kod $r)") }
-            })
+            p2pManager.createGroup(p2pChannel, listener)
         }
     }
 
     private fun fetchGroupInfo() {
         p2pManager.requestGroupInfo(p2pChannel) { group ->
             if (group == null) {
-                // Bir kez daha dene
                 mainHandler.postDelayed({
                     p2pManager.requestGroupInfo(p2pChannel) { g2 ->
                         if (g2 == null) onError("Grup bilgisi alınamadı")
@@ -157,6 +176,7 @@ class WifiShareService : Service() {
 
     private fun onError(msg: String) {
         isRunning = false
+        lastError = msg
         updateNotification("Hata: $msg")
         broadcast("error", msg)
         stopForeground(STOP_FOREGROUND_REMOVE)

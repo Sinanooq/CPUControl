@@ -200,6 +200,28 @@ object RootHelper {
     // ── Root kontrolü ───────────────────────────────────────────────────────
     fun checkRoot(): Boolean = runAsRoot("id").first
 
+    // ── wpa_cli P2P (root ile doğrudan wpa_supplicant) ──────────────────────
+    fun wpaCliCreateGroup(ssid: String, pass: String): Pair<Boolean, String> {
+        // wlan0 interface adını bul
+        val iface = getWlanInterface()
+        // Önce temizle
+        runAsRoot("wpa_cli -i $iface p2p_group_remove all 2>/dev/null || true")
+        Thread.sleep(300)
+        // P2P group oluştur (persistent=0, GO intent=15 = her zaman GO ol)
+        val (ok, out) = runAsRoot("wpa_cli -i $iface p2p_group_add")
+        if (!ok && !out.contains("OK")) return Pair(false, "wpa_cli başarısız: $out")
+        Thread.sleep(800)
+        // Oluşan interface'i bul
+        val (_, ifOut) = runAsRoot("ip link show | grep 'p2p-' | awk -F': ' '{print \$2}' | head -1")
+        val p2pIface = ifOut.trim().ifEmpty { "p2p-wlan0-0" }
+        return Pair(true, p2pIface)
+    }
+
+    fun getWlanInterface(): String {
+        val (_, out) = runAsRoot("ip link show | grep -E 'wlan[0-9]:' | awk -F': ' '{print \$2}' | head -1")
+        return out.trim().ifEmpty { "wlan0" }
+    }
+
     fun startDnsmasq(iface: String): Boolean {
         // Önce varsa öldür
         runAsRoot("pkill -f dnsmasq 2>/dev/null || true")
