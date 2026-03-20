@@ -122,6 +122,7 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
             app:cardBackgroundColor="@color/bg_card"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
@@ -144,7 +145,7 @@
                         android:textColor="@color/text_secondary"
                         android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 
-                    <TextView android:id="@+id/tvRefreshRate" android:text="144 Hz"
+                    <TextView android:id="@+id/tvRefreshRate" android:text="90 Hz"
                         android:textSize="26sp" android:textStyle="bold"
                         android:textColor="@color/accent_yellow"
                         android:layout_width="0dp" android:layout_height="wrap_content"
@@ -153,7 +154,7 @@
 
                 <SeekBar android:id="@+id/seekRefreshRate"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:max="3" android:progress="3"
+                    android:max="2" android:progress="1"
                     android:progressTint="@color/accent_yellow" android:thumbTint="@color/accent_yellow"
                     android:layout_marginBottom="18dp"/>
 
@@ -166,6 +167,100 @@
                     app:cornerRadius="16dp"/>
 
                 <TextView android:id="@+id/tvRefreshStatus"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="center" android:textSize="12sp"
+                    android:textColor="@color/text_secondary" android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── DNS DEĞİŞTİRİCİ ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <TextView android:text="DNS DEĞİŞTİRİCİ" android:textSize="9sp"
+                        android:textColor="@color/accent_cyan" android:textStyle="bold"
+                        android:letterSpacing="0.15" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+
+                    <TextView android:id="@+id/tvCurrentDns" android:text="Mevcut DNS: —"
+                        android:textSize="11sp" android:textColor="@color/text_secondary"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView android:text="Hızlı DNS seçimi veya özel DNS girin"
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dp"/>
+
+                <!-- Hızlı DNS butonları -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="10dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDnsCloudflare"
+                        android:layout_width="0dp" android:layout_height="44dp"
+                        android:layout_weight="1" android:text="Cloudflare"
+                        android:textSize="12sp" android:textColor="@color/accent_cyan"
+                        android:backgroundTint="@color/accent_cyan_dim"
+                        app:cornerRadius="12dp" android:layout_marginEnd="6dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDnsGoogle"
+                        android:layout_width="0dp" android:layout_height="44dp"
+                        android:layout_weight="1" android:text="Google"
+                        android:textSize="12sp" android:textColor="@color/accent_green"
+                        android:backgroundTint="@color/accent_green_dim"
+                        app:cornerRadius="12dp"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnDnsAdguard"
+                        android:layout_width="0dp" android:layout_height="44dp"
+                        android:layout_weight="1" android:text="AdGuard"
+                        android:textSize="12sp" android:textColor="@color/accent_purple"
+                        android:backgroundTint="@color/accent_purple_dim"
+                        app:cornerRadius="12dp" android:layout_marginEnd="6dp"/>
+
+                    <View android:layout_width="0dp" android:layout_height="0dp"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <!-- Özel DNS -->
+                <EditText android:id="@+id/etCustomDns"
+                    android:layout_width="match_parent" android:layout_height="52dp"
+                    android:hint="Özel DNS (örn: 1.1.1.1)"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@color/bg_elevated"
+                    android:paddingStart="16dp" android:paddingEnd="16dp"
+                    android:inputType="text"
+                    android:layout_marginBottom="10dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDnsCustom"
+                    android:layout_width="match_parent" android:layout_height="54dp"
+                    android:text="Özel DNS Uygula"
+                    android:textColor="@android:color/black"
+                    android:backgroundTint="@color/accent_cyan"
+                    app:cornerRadius="16dp"/>
+
+                <TextView android:id="@+id/tvDnsStatus"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:gravity="center" android:textSize="12sp"
                     android:textColor="@color/text_secondary" android:layout_marginTop="10dp"/>

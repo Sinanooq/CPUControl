@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_primary"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="28dp">
+
+        <!-- ── RAM KULLANIMI ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView android:text="RAM KULLANIMI" android:textSize="9sp"
+                        android:textColor="@color/accent_cyan" android:textStyle="bold"
+                        android:letterSpacing="0.15" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+
+                    <TextView android:id="@+id/tvRamTotal" android:text="— MB toplam"
+                        android:textSize="11sp" android:textColor="@color/text_secondary"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <!-- Kullanılan / Boş -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="14dp">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_cyan_dim" android:padding="14dp"
+                        android:layout_marginEnd="8dp">
+                        <TextView android:text="KULLANILAN" android:textSize="8sp"
+                            android:textColor="@color/accent_cyan" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvRamUsed" android:text="— MB"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_cyan" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_green_dim" android:padding="14dp">
+                        <TextView android:text="BOŞTA" android:textSize="8sp"
+                            android:textColor="@color/accent_green" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvRamFree" android:text="— MB"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_green" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <ProgressBar android:id="@+id/progressRam"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent" android:layout_height="8dp"
+                    android:max="100" android:progress="0"
+                    android:progressTint="@color/accent_cyan"
+                    android:progressBackgroundTint="@color/divider"
+                    android:layout_marginBottom="14dp"/>
+
+                <TextView android:id="@+id/tvRamCached" android:text="Önbellek: — MB"
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── ÖNBELLEK TEMİZLE ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <TextView android:text="ÖNBELLEK" android:textSize="9sp"
+                    android:textColor="@color/accent_orange" android:textStyle="bold"
+                    android:letterSpacing="0.15" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:layout_marginBottom="6dp"/>
+
+                <TextView android:text="Sistem önbelleğini temizleyerek RAM boşaltır"
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:layout_marginBottom="18dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnClearCache"
+                    android:layout_width="match_parent" android:layout_height="54dp"
+                    android:text="Önbelleği Temizle"
+                    android:textColor="@android:color/black"
+                    android:backgroundTint="@color/accent_orange"
+                    app:cornerRadius="16dp"/>
+
+                <TextView android:id="@+id/tvCacheStatus"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="center" android:textSize="12sp"
+                    android:textColor="@color/text_secondary" android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── ZRAM ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <TextView android:text="ZRAM" android:textSize="9sp"
+                    android:textColor="@color/accent_purple" android:textStyle="bold"
+                    android:letterSpacing="0.15" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:layout_marginBottom="16dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_purple_dim" android:padding="14dp"
+                        android:layout_marginEnd="8dp">
+                        <TextView android:text="ZRAM BOYUTU" android:textSize="8sp"
+                            android:textColor="@color/accent_purple" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvZramSize" android:text="— MB"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_purple" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_yellow_dim" android:padding="14dp">
+                        <TextView android:text="KULLANILAN" android:textSize="8sp"
+                            android:textColor="@color/accent_yellow" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvZramUsed" android:text="— MB"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_yellow" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

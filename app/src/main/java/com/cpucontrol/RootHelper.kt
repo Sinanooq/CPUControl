@@ -199,4 +199,18 @@ object RootHelper {
 
     // ── Root kontrolü ───────────────────────────────────────────────────────
     fun checkRoot(): Boolean = runAsRoot("id").first
+
+    // ── DNS ─────────────────────────────────────────────────────────────────
+    fun setDns(dns1: String, dns2: String): Boolean {
+        val cmds = listOf(
+            "setprop net.dns1 $dns1",
+            "setprop net.dns2 $dns2",
+            "setprop persist.net.dns1 $dns1",
+            "setprop persist.net.dns2 $dns2",
+            "ndc resolver setnetdns 100 \"\" $dns1 $dns2"
+        )
+        var ok = false
+        for (cmd in cmds) { if (runAsRoot(cmd).first) ok = true }
+        return ok
+    }
 }

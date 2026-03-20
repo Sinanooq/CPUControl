@@ -136,6 +136,108 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- ── PİL SAĞLIĞI ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/accent_green_dim"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView android:text="PİL SAĞLIĞI" android:textSize="9sp"
+                        android:textColor="@color/accent_green" android:textStyle="bold"
+                        android:letterSpacing="0.15" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRefreshHealth"
+                        android:text="Yenile" android:layout_width="wrap_content"
+                        android:layout_height="32dp" app:cornerRadius="8dp"
+                        android:backgroundTint="@color/bg_elevated"
+                        android:textColor="@color/text_secondary" android:textSize="11sp"/>
+                </LinearLayout>
+
+                <!-- Kapasite -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="12dp">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_green_dim" android:padding="14dp"
+                        android:layout_marginEnd="8dp">
+                        <TextView android:text="GERÇEK KAPASİTE" android:textSize="8sp"
+                            android:textColor="@color/accent_green" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvHealthCapacity" android:text="—"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_green" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvHealthCapacityMah" android:text="— mAh"
+                            android:textSize="10sp" android:textColor="@color/text_secondary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_cyan_dim" android:padding="14dp">
+                        <TextView android:text="TASARIM KAPASİTESİ" android:textSize="8sp"
+                            android:textColor="@color/accent_cyan" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvHealthDesign" android:text="—"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_cyan" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="mAh (fabrika)" android:textSize="10sp"
+                            android:textColor="@color/text_secondary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Şarj döngüsü + sağlık yüzdesi -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_purple_dim" android:padding="14dp"
+                        android:layout_marginEnd="8dp">
+                        <TextView android:text="ŞARJ DÖNGÜSÜ" android:textSize="8sp"
+                            android:textColor="@color/accent_purple" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvHealthCycles" android:text="—"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_purple" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical"
+                        android:background="@color/accent_yellow_dim" android:padding="14dp">
+                        <TextView android:text="PİL SAĞLIĞI" android:textSize="8sp"
+                            android:textColor="@color/accent_yellow" android:letterSpacing="0.1"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvHealthPercent" android:text="—%"
+                            android:textSize="22sp" android:textStyle="bold"
+                            android:textColor="@color/accent_yellow" android:layout_marginTop="4dp"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvHealthLabel" android:text="—"
+                            android:textSize="10sp" android:textColor="@color/text_secondary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- ── GECE ŞARJ PLANI ── -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
