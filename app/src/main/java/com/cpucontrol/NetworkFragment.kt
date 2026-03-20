@@ -113,8 +113,6 @@ class NetworkFragment : Fragment() {
         val etCustomDns      = view.findViewById<EditText>(R.id.etCustomDns)
         val tvDnsStatus      = view.findViewById<TextView>(R.id.tvDnsStatus)
 
-        val prefs = requireContext().getSharedPreferences("cpu_prefs", 0)
-
         // TCP durumunu oku
         scope.launch {
             val cong = withContext(Dispatchers.IO) { RootHelper.getTcpCongestion() }
