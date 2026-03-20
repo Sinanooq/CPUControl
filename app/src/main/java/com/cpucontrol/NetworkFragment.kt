@@ -233,6 +233,18 @@ class NetworkFragment : Fragment() {
         val switchTetherFlag  = view.findViewById<SwitchMaterial>(R.id.switchTetherFlag)
         val switchIpv6Disable = view.findViewById<SwitchMaterial>(R.id.switchIpv6Disable)
         val tvHotspotStatus   = view.findViewById<TextView>(R.id.tvHotspotHideStatus)
+        val btnFixTether      = view.findViewById<MaterialButton>(R.id.btnFixTether)
+
+        btnFixTether.setOnClickListener {
+            scope.launch {
+                withContext(Dispatchers.IO) {
+                    RootHelper.runAsRoot("settings put global tether_supported 1")
+                    RootHelper.runAsRoot("settings put global wifi_saved_state 1")
+                }
+                tvHotspotStatus.text = "Hotspot onarıldı — sistem hotspot'u tekrar açılabilir"
+                tvHotspotStatus.setTextColor(requireContext().getColor(R.color.accent_green))
+            }
+        }
 
         switchMss.isChecked = prefs.getBoolean("mss_clamp", false)
         switchMss.setOnCheckedChangeListener { _, checked ->

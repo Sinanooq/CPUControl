@@ -374,6 +374,15 @@
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:gravity="center" android:textSize="12sp"
                     android:textColor="@color/text_secondary" android:layout_marginTop="14dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnFixTether"
+                    android:layout_width="match_parent" android:layout_height="48dp"
+                    android:text="Sistem Hotspot'u Onar"
+                    android:textColor="@android:color/black"
+                    android:backgroundTint="@color/accent_orange"
+                    app:cornerRadius="14dp"
+                    android:layout_marginTop="10dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
