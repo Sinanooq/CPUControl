@@ -186,9 +186,10 @@ class BloatwareFragment : Fragment() {
 
         return allPkgs.map { info ->
             val isSystem = info.flags and ApplicationInfo.FLAG_SYSTEM != 0
+            val enabledState = pm.getApplicationEnabledSetting(info.packageName)
             val isDisabled = info.flags and ApplicationInfo.FLAG_INSTALLED == 0 ||
-                             info.enabledSetting == PackageManager.COMPONENT_ENABLED_STATE_DISABLED ||
-                             info.enabledSetting == PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER
+                             enabledState == PackageManager.COMPONENT_ENABLED_STATE_DISABLED ||
+                             enabledState == PackageManager.COMPONENT_ENABLED_STATE_DISABLED_USER
 
             BloatApp(
                 name       = pm.getApplicationLabel(info).toString(),
