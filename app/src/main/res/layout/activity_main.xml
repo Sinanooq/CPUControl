@@ -63,6 +63,16 @@
                     android:fontFamily="sans-serif-light"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+
+                <ImageButton
+                    android:id="@+id/btnThemeToggle"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_theme_light"
+                    android:contentDescription="Tema degistir"
+                    android:layout_marginTop="4dp"/>
+
             </LinearLayout>
 
         </LinearLayout>
