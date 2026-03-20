@@ -322,8 +322,7 @@ object RootHelper {
     fun hideTetherFlags(): Boolean {
         val cmds = listOf(
             "setprop net.tethering.noti 0",
-            "setprop persist.sys.tethering 0",
-            "settings put global tether_supported 0 2>/dev/null || true"
+            "setprop persist.sys.tethering 0"
         )
         var ok = false
         for (cmd in cmds) { if (runAsRoot(cmd).first) ok = true }
@@ -332,11 +331,13 @@ object RootHelper {
 
     fun setIpv6Disabled(disable: Boolean): Boolean {
         val v = if (disable) "1" else "0"
+        // Sadece rmnet (mobil veri) interface'lerinde kapat, WiFi/hotspot'u etkileme
         val cmds = listOf(
-            "echo $v > /proc/sys/net/ipv6/conf/all/disable_ipv6",
-            "echo $v > /proc/sys/net/ipv6/conf/default/disable_ipv6"
+            "for iface in /proc/sys/net/ipv6/conf/rmnet*; do echo $v > \$iface/disable_ipv6 2>/dev/null || true; done",
+            "echo $v > /proc/sys/net/ipv6/conf/default/disable_ipv6 2>/dev/null || true"
         )
-        return cmds.all { runAsRoot(it).first }
+        cmds.forEach { runAsRoot(it) }
+        return true
     }
 
     // ── TTL Fix (Hotspot tespitini engelle) ─────────────────────────────────
