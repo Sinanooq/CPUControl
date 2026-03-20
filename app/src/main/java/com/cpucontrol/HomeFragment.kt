@@ -111,7 +111,7 @@ class HomeFragment : Fragment() {
                 val littleMax = RootHelper.getCpuMaxFreq(0)
                 val bigMax    = RootHelper.getCpuMaxFreq(4)
                 val primeMax  = RootHelper.getCpuMaxFreq(7)
-                val gpuCur    = RootHelper.runAsRoot("cat ${RootHelper.GPU_PATH}/cur_freq")
+                val gpuCur    = RootHelper.runAsRoot("cat ${RootHelper.getGpuPathCached()}/cur_freq")
                     .second.trim().toLongOrNull() ?: -1L
                 val onlineStates = (0..7).map { RootHelper.isCpuOnline(it) }
                 listOf(tempC, littleMax, bigMax, primeMax, gpuCur.toInt()) to onlineStates

@@ -59,7 +59,9 @@ class GpuFragment : Fragment() {
                 tvMinSel.text = "${freqs[newMinIdx] / 1000000} MHz"
                 tvMaxSel.text = "${freqs[newMaxIdx] / 1000000} MHz"
             }
-        }(object : SeekBar.OnSeekBarChangeListener {
+        }
+
+        seekMin.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(sb: SeekBar, p: Int, fromUser: Boolean) {
                 tvMinSel.text = "${freqs[p] / 1000000} MHz"
             }
