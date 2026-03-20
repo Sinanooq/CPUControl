@@ -292,39 +292,31 @@ object RootHelper {
 
     // ── Hotspot Gizleme ─────────────────────────────────────────────────────
     fun applyMssClamping(): Boolean {
-        val cmds = listOf(
-            "iptables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true",
-            "iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452",
-            "ip6tables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true",
-            "ip6tables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452"
-        )
-        return cmds.all { runAsRoot(it).first }
+        runAsRoot("iptables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true")
+        runAsRoot("iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true")
+        return true
     }
 
     fun resetMssClamping(): Boolean {
-        val cmds = listOf(
-            "iptables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true",
-            "ip6tables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true"
-        )
-        return cmds.all { runAsRoot(it).first }
+        runAsRoot("iptables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true")
+        return true
     }
 
     fun applyDscpZero(): Boolean {
-        val cmds = listOf(
-            "iptables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true",
-            "iptables -t mangle -A POSTROUTING -j DSCP --set-dscp 0",
-            "ip6tables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true",
-            "ip6tables -t mangle -A POSTROUTING -j DSCP --set-dscp 0"
-        )
-        return cmds.all { runAsRoot(it).first }
+        runAsRoot("iptables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true")
+        runAsRoot("iptables -t mangle -A POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -A POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true")
+        return true
     }
 
     fun resetDscpZero(): Boolean {
-        val cmds = listOf(
-            "iptables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true",
-            "ip6tables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true"
-        )
-        return cmds.all { runAsRoot(it).first }
+        runAsRoot("iptables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true")
+        return true
     }
 
     fun hideTetherFlags(): Boolean {
@@ -354,28 +346,27 @@ object RootHelper {
     }
 
     fun setTtl(ttl: Int): Boolean {
-        val cmds = listOf(
-            "echo $ttl > /proc/sys/net/ipv4/ip_default_ttl",
-            // IPv6 hop limit
-            "echo $ttl > /proc/sys/net/ipv6/conf/all/hop_limit",
-            // iptables IPv4
-            "iptables -t mangle -D POSTROUTING -j TTL --ttl-set $ttl 2>/dev/null || true",
-            "iptables -t mangle -A POSTROUTING -j TTL --ttl-set $ttl",
-            // ip6tables IPv6
-            "ip6tables -t mangle -D POSTROUTING -j HL --hl-set $ttl 2>/dev/null || true",
-            "ip6tables -t mangle -A POSTROUTING -j HL --hl-set $ttl"
-        )
-        return cmds.all { runAsRoot(it).first }
+        // /proc/sys yazımı her kernel'de çalışır — bu kesinlikle başarılı olmalı
+        runAsRoot("echo $ttl > /proc/sys/net/ipv4/ip_default_ttl")
+        runAsRoot("echo $ttl > /proc/sys/net/ipv6/conf/all/hop_limit")
+        runAsRoot("echo $ttl > /proc/sys/net/ipv6/conf/default/hop_limit")
+        // iptables modülleri varsa uygula, yoksa sessizce geç
+        runAsRoot("iptables -t mangle -D POSTROUTING -j TTL --ttl-set $ttl 2>/dev/null || true")
+        runAsRoot("iptables -t mangle -A POSTROUTING -j TTL --ttl-set $ttl 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -D POSTROUTING -j HL --hl-set $ttl 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -A POSTROUTING -j HL --hl-set $ttl 2>/dev/null || true")
+        // /proc/sys yazımı başarılıysa true dön
+        val (ok, _) = runAsRoot("cat /proc/sys/net/ipv4/ip_default_ttl")
+        return ok
     }
 
     fun resetTtl(): Boolean {
-        val cmds = listOf(
-            "echo 64 > /proc/sys/net/ipv4/ip_default_ttl",
-            "echo 64 > /proc/sys/net/ipv6/conf/all/hop_limit",
-            "iptables -t mangle -F POSTROUTING 2>/dev/null || true",
-            "ip6tables -t mangle -F POSTROUTING 2>/dev/null || true"
-        )
-        return cmds.all { runAsRoot(it).first }
+        runAsRoot("echo 64 > /proc/sys/net/ipv4/ip_default_ttl")
+        runAsRoot("echo 64 > /proc/sys/net/ipv6/conf/all/hop_limit")
+        runAsRoot("echo 64 > /proc/sys/net/ipv6/conf/default/hop_limit")
+        runAsRoot("iptables -t mangle -F POSTROUTING 2>/dev/null || true")
+        runAsRoot("ip6tables -t mangle -F POSTROUTING 2>/dev/null || true")
+        return true
     }
 
     // ── DNS ─────────────────────────────────────────────────────────────────
