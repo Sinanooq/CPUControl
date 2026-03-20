@@ -271,7 +271,7 @@ class NetworkFragment : Fragment() {
                 }
                 prefs.edit().putBoolean("ttl_fix", checked && ok).apply()
                 if (ok) {
-                    tvTtlStatus.text = if (checked) "TTL $selectedTtl olarak sabitlendi" else "TTL sıfırlandı (64)"
+                    tvTtlStatus.text = if (checked) "TTL $selectedTtl sabitlendi (IPv4 + IPv6)" else "TTL sıfırlandı (64)"
                     tvTtlStatus.setTextColor(requireContext().getColor(if (checked) R.color.accent_green else R.color.text_secondary))
                 } else {
                     tvTtlStatus.text = "Uygulanamadı — root gerekli"

@@ -299,9 +299,14 @@ object RootHelper {
     fun setTtl(ttl: Int): Boolean {
         val cmds = listOf(
             "echo $ttl > /proc/sys/net/ipv4/ip_default_ttl",
-            // iptables ile giden paketlerin TTL'ini de sabitle (hotspot tespitini engeller)
+            // IPv6 hop limit
+            "echo $ttl > /proc/sys/net/ipv6/conf/all/hop_limit",
+            // iptables IPv4
             "iptables -t mangle -D POSTROUTING -j TTL --ttl-set $ttl 2>/dev/null || true",
-            "iptables -t mangle -A POSTROUTING -j TTL --ttl-set $ttl"
+            "iptables -t mangle -A POSTROUTING -j TTL --ttl-set $ttl",
+            // ip6tables IPv6
+            "ip6tables -t mangle -D POSTROUTING -j HL --hl-set $ttl 2>/dev/null || true",
+            "ip6tables -t mangle -A POSTROUTING -j HL --hl-set $ttl"
         )
         return cmds.all { runAsRoot(it).first }
     }
@@ -309,8 +314,9 @@ object RootHelper {
     fun resetTtl(): Boolean {
         val cmds = listOf(
             "echo 64 > /proc/sys/net/ipv4/ip_default_ttl",
-            "iptables -t mangle -D POSTROUTING -j TTL --ttl-set 64 2>/dev/null || true",
-            "iptables -t mangle -F POSTROUTING 2>/dev/null || true"
+            "echo 64 > /proc/sys/net/ipv6/conf/all/hop_limit",
+            "iptables -t mangle -F POSTROUTING 2>/dev/null || true",
+            "ip6tables -t mangle -F POSTROUTING 2>/dev/null || true"
         )
         return cmds.all { runAsRoot(it).first }
     }
