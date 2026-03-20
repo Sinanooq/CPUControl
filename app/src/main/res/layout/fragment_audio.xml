@@ -185,6 +185,55 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Modül Uyarı Kartı -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardModuleWarning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/accent_orange"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:text="⚠  SES BOOST MODÜLÜ KURULU DEĞİL"
+                    android:textSize="12sp"
+                    android:textColor="@color/accent_orange"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="Amplifikasyon için AudioVolumeBoost modülünü Magisk / KSU / KSU Next üzerinden kurmanız gerekiyor. Modül ZIP dosyası uygulama deposunda mevcut."
+                    android:textSize="11sp"
+                    android:textColor="@color/text_secondary"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tvModuleStatus"
+                    android:text=""
+                    android:textSize="10sp"
+                    android:textColor="@color/text_hint"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
         <!-- Yazılım Amplifikasyonu -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"

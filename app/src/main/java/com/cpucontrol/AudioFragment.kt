@@ -1,7 +1,10 @@
 package com.cpucontrol
 
 import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFormat
 import android.media.AudioManager
+import android.media.AudioTrack
 import android.media.audiofx.LoudnessEnhancer
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -38,6 +41,26 @@ class AudioFragment : Fragment() {
         val btnReset  = view.findViewById<MaterialButton>(R.id.btnGainReset)
         val btnListMixer = view.findViewById<MaterialButton>(R.id.btnListMixer)
         val tvMixerList  = view.findViewById<TextView>(R.id.tvMixerList)
+        val cardModuleWarning = view.findViewById<android.view.View>(R.id.cardModuleWarning)
+        val tvModuleStatus    = view.findViewById<TextView>(R.id.tvModuleStatus)
+
+        // ── Modül kurulu mu kontrol et ────────────────────────────────────
+        scope.launch {
+            val (installed, detail) = withContext(Dispatchers.IO) { checkAudioModule() }
+            if (!installed) {
+                cardModuleWarning.visibility = android.view.View.VISIBLE
+                tvModuleStatus.text = detail
+                // Boost butonlarını devre dışı bırak
+                btnApply.isEnabled = false
+                btnApply.alpha = 0.4f
+                seekBoost.isEnabled = false
+                seekBoost.alpha = 0.4f
+                tvStatus.text = "⚠ Modül kurulu değil — amplifikasyon devre dışı"
+                tvStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
+            } else {
+                cardModuleWarning.visibility = android.view.View.GONE
+            }
+        }
 
         // ── Sistem ses seviyeleri ──────────────────────────────────────────
         fun pct(stream: Int): Int {
@@ -112,29 +135,72 @@ class AudioFragment : Fragment() {
             scope.launch { withContext(Dispatchers.IO) { applyBoost(requireContext(), am, savedBoost) } }
         }
 
-        // Mixer kontrollerini listele — debug için
+        // Tanı butonu — audio_policy_volumes.xml ve sistem bilgisi
         btnListMixer.setOnClickListener {
             btnListMixer.isEnabled = false
-            tvMixerList.text = "Listeleniyor..."
+            tvMixerList.text = "Taranıyor..."
             scope.launch {
-                val (_, out) = withContext(Dispatchers.IO) {
-                    RootHelper.runAsRoot("tinymix 2>/dev/null")
-                }
+                val out = withContext(Dispatchers.IO) { diagAudio() }
                 btnListMixer.isEnabled = true
-                if (out.isBlank()) {
-                    tvMixerList.text = "tinymix bulunamadı veya root yok"
-                } else {
-                    // Sadece ses/gain/volume içerenleri göster
-                    val keywords = listOf("speaker", "spk", "volume", "gain", "playback",
-                        "lineout", "hpout", "earpiece", "amp", "pcm", "audio", "rx", "tx")
-                    val filtered = out.lines()
-                        .filter { line -> keywords.any { line.lowercase().contains(it) } }
-                        .take(30)
-                        .joinToString("\n")
-                    tvMixerList.text = filtered.ifBlank { "Eşleşen kontrol bulunamadı\n\n${out.take(500)}" }
-                }
+                tvMixerList.text = out
             }
         }
+    }
+
+    private fun checkAudioModule(): Pair<Boolean, String> {
+        // KSU Next modül dizini
+        val ksuPath = "/data/adb/modules/audio_boost"
+        val magiskPath = "/data/adb/modules/audio_boost"
+        val xmlOverlay = "$ksuPath/system/vendor/etc/audio_policy_volumes.xml"
+
+        val (modExists, _) = RootHelper.runAsRoot("test -d $ksuPath")
+        if (!modExists) return Pair(false, "Modül dizini bulunamadı: $ksuPath")
+
+        val (xmlExists, _) = RootHelper.runAsRoot("test -f $xmlOverlay")
+        if (!xmlExists) return Pair(false, "Overlay XML bulunamadı: $xmlOverlay")
+
+        // Modül disabled mi?
+        val (disabledExists, _) = RootHelper.runAsRoot("test -f $ksuPath/disable")
+        if (disabledExists) return Pair(false, "Modül devre dışı bırakılmış")
+
+        // Overlay gerçekten aktif mi? (boot sonrası mount edilmiş olmalı)
+        val (_, mountOut) = RootHelper.runAsRoot("cat /proc/mounts")
+        val overlayActive = mountOut.contains("audio_boost") || mountOut.contains("overlay")
+
+        return Pair(true, if (overlayActive) "Aktif + overlay mount edilmiş" else "Kurulu (yeniden başlatma gerekebilir)")
+    }
+
+    private fun diagAudio(): String {
+        val sb = StringBuilder()
+
+        // audio_policy_volumes.xml nerede?
+        val xmlPaths = listOf(
+            "/vendor/etc/audio_policy_volumes.xml",
+            "/system/etc/audio_policy_volumes.xml",
+            "/odm/etc/audio_policy_volumes.xml",
+            "/vendor/etc/audio/audio_policy_volumes.xml"
+        )
+        val foundXml = xmlPaths.firstOrNull { RootHelper.runAsRoot("test -f $it").first }
+        sb.appendLine("=== audio_policy_volumes.xml: ${foundXml ?: "BULUNAMADI"}")
+        if (foundXml != null) {
+            val (_, xmlContent) = RootHelper.runAsRoot("cat $foundXml | head -30")
+            sb.appendLine(xmlContent.trim())
+        }
+
+        // tinymix
+        val tinymixPaths = listOf("/system/bin/tinymix", "/vendor/bin/tinymix", "/system/xbin/tinymix")
+        val tinymixBin = tinymixPaths.firstOrNull { RootHelper.runAsRoot("test -x $it").first }
+        sb.appendLine("\n=== tinymix: ${tinymixBin ?: "BULUNAMADI"}")
+
+        // /proc/asound
+        val (_, asoundOut) = RootHelper.runAsRoot("ls /proc/asound/ 2>/dev/null")
+        sb.appendLine("=== /proc/asound: ${asoundOut.trim().ifEmpty { "YOK" }}")
+
+        // audioserver durumu
+        val (_, psOut) = RootHelper.runAsRoot("ps -A | grep audioserver | head -3")
+        sb.appendLine("=== audioserver: ${psOut.trim().ifEmpty { "YOK" }}")
+
+        return sb.toString()
     }
 
     private fun boostLabel(p: Int): String = when {
@@ -145,13 +211,12 @@ class AudioFragment : Fragment() {
     }
 
     private fun applyBoost(ctx: Context, am: AudioManager, boostPct: Int): String {
-        // Mevcut enhancer'ı temizle
         runCatching { enhancer?.release() }
         enhancer = null
 
         if (boostPct == 0) {
             RootHelper.runAsRoot("setprop persist.audio.volume.boost 0")
-            restoreTinymix()
+            restoreAudioPolicyVolumes()
             return "✓ Sıfırlandı"
         }
 
@@ -164,84 +229,122 @@ class AudioFragment : Fragment() {
             results.add("vol_max")
         } catch (_: Exception) {}
 
-        // Katman 2: tinymix — cihazdan gerçek kontrolleri bul ve uygula
-        val tinymixOk = applyTinymixDynamic(boostPct)
-        if (tinymixOk) results.add("hw_mixer")
+        // Katman 2: audio_policy_volumes.xml — en etkili yöntem
+        if (patchAudioPolicyVolumes(boostPct)) results.add("policy_xml")
 
-        // Katman 3: LoudnessEnhancer tüm session'lara dene
+        // Katman 3: LoudnessEnhancer — AudioTrack ile gerçek session ID al
         val gainMilliDb = (boostPct * 12).coerceIn(100, 1500)
-        for (session in listOf(0, 1, am.generateAudioSessionId())) {
+        try {
+            val minBuf = AudioTrack.getMinBufferSize(44100, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT)
+            val audioTrack = AudioTrack.Builder()
+                .setAudioAttributes(AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build())
+                .setAudioFormat(AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                    .setSampleRate(44100)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_STEREO)
+                    .build())
+                .setBufferSizeInBytes(minBuf)
+                .setTransferMode(AudioTrack.MODE_STREAM)
+                .build()
+            val sessionId = audioTrack.audioSessionId
+            val le = LoudnessEnhancer(sessionId)
+            le.setTargetGain(gainMilliDb)
+            le.enabled = true
+            audioTrack.play()
+            enhancer = le
+            results.add("le_audiotrack")
+        } catch (_: Exception) {
+            // Fallback: session 0 dene
             try {
-                val le = LoudnessEnhancer(session)
+                val le = LoudnessEnhancer(0)
                 le.setTargetGain(gainMilliDb)
                 le.enabled = true
-                if (enhancer == null) enhancer = le else le.release()
-                results.add("le_s$session")
-                break
+                enhancer = le
+                results.add("le_s0")
             } catch (_: Exception) {}
         }
 
-        // Katman 4: setprop ile persist
+        // Katman 4: persist property
         RootHelper.runAsRoot("setprop persist.audio.volume.boost $boostPct")
 
         return if (results.isNotEmpty())
             "✓ ${results.joinToString(" + ")}"
         else
-            "⚠ Etki yok — tinymix bulunamadı"
+            "⚠ Etki yok — root veya desteklenmiyor"
     }
 
-    private fun applyTinymixDynamic(boostPct: Int): Boolean {
-        // Cihazdan tüm mixer kontrollerini listele
-        val (ok, out) = RootHelper.runAsRoot("tinymix 2>/dev/null | head -80")
-        if (!ok || out.isBlank()) return false
+    /**
+     * /vendor/etc/audio_policy_volumes.xml içindeki SPEAKER attenuation değerlerini
+     * boost oranına göre düşürür (daha az attenuation = daha yüksek ses).
+     * Değişiklik audioserver restart ile aktif olur.
+     */
+    private fun patchAudioPolicyVolumes(boostPct: Int): Boolean {
+        val candidates = listOf(
+            "/vendor/etc/audio_policy_volumes.xml",
+            "/system/etc/audio_policy_volumes.xml",
+            "/odm/etc/audio_policy_volumes.xml",
+            "/vendor/etc/audio/audio_policy_volumes.xml"
+        )
+        val src = candidates.firstOrNull { RootHelper.runAsRoot("test -f $it").first } ?: return false
 
-        // Ses/gain/volume içeren satırları bul
-        val keywords = listOf("speaker", "spk", "rx volume", "rx gain", "playback volume",
-            "digital volume", "lineout", "hpout", "earpiece", "amp gain", "output volume",
-            "master volume", "pcm volume", "audio gain")
+        // Backup al (bir kez)
+        val bak = "$src.bak"
+        val (bakExists, _) = RootHelper.runAsRoot("test -f $bak")
+        if (!bakExists) RootHelper.runAsRoot("cp $src $bak")
 
-        val lines = out.lines()
-        var applied = false
+        // Mevcut içeriği oku
+        val (_, content) = RootHelper.runAsRoot("cat $src")
+        if (content.isBlank()) return false
 
-        for (line in lines) {
-            val lower = line.lowercase()
-            if (keywords.none { lower.contains(it) }) continue
-
-            // Kontrol adını çıkar — "ID Name Value" formatı
-            // tinymix çıktısı: "  0  Speaker Volume          100 (range 0->255)"
-            val nameMatch = Regex("^\\s*\\d+\\s+(.+?)\\s{2,}").find(line)
-                ?: Regex("^\\s*(.+?)\\s+\\d+").find(line)
-            val ctrlName = nameMatch?.groupValues?.get(1)?.trim() ?: continue
-
-            // Mevcut max değeri bul
-            val rangeMatch = Regex("range\\s+(\\d+)->\\s*(\\d+)").find(line)
-            val maxVal = rangeMatch?.groupValues?.get(2)?.toIntOrNull() ?: 255
-            val minVal = rangeMatch?.groupValues?.get(1)?.toIntOrNull() ?: 0
-
-            // Boost oranına göre değer hesapla — max'ın %boostPct üstü
-            val targetVal = (minVal + (maxVal - minVal) * (100 + boostPct) / 100).coerceAtMost(maxVal)
-
-            val (setOk, _) = RootHelper.runAsRoot("tinymix '$ctrlName' $targetVal 2>/dev/null")
-            if (setOk) applied = true
+        // SPEAKER satırlarındaki attenuation değerlerini azalt
+        // Örnek: <point>100,-9600</point>  →  daha az negatif değer = daha yüksek ses
+        // boostPct=50 → attenuation'ı %50 azalt
+        val reductionFactor = 1.0 - (boostPct / 200.0) // max %50 azaltma
+        val patched = content.replace(Regex("(<point>)(\\d+),(-\\d+)(</point>)")) { mr ->
+            val idx = mr.groupValues[2].toIntOrNull() ?: return@replace mr.value
+            val atten = mr.groupValues[3].toIntOrNull() ?: return@replace mr.value
+            val newAtten = (atten * reductionFactor).toInt()
+            "${mr.groupValues[1]}$idx,$newAtten${mr.groupValues[4]}"
         }
-        return applied
+
+        if (patched == content) return false
+
+        // Geçici dosyaya yaz, sonra kopyala
+        val tmp = "/data/local/tmp/audio_policy_volumes_patched.xml"
+        val writeOk = RootHelper.runAsRoot("cat > $tmp << 'AUDIOEOF'\n$patched\nAUDIOEOF").first
+        if (!writeOk) {
+            // Alternatif yazma yöntemi
+            RootHelper.runAsRoot("echo '${patched.replace("'", "'\\''")}' > $tmp")
+        }
+        val (cpOk, _) = RootHelper.runAsRoot("cp $tmp $src && chmod 644 $src")
+        if (!cpOk) return false
+
+        // audioserver'ı yeniden başlat
+        RootHelper.runAsRoot("killall audioserver 2>/dev/null || true")
+        RootHelper.runAsRoot("stop audioserver 2>/dev/null; start audioserver 2>/dev/null || true")
+
+        return true
     }
 
-    private fun restoreTinymix() {
-        val (_, out) = RootHelper.runAsRoot("tinymix 2>/dev/null | head -80")
-        if (out.isBlank()) return
-        val keywords = listOf("speaker", "spk", "rx volume", "rx gain", "playback volume",
-            "digital volume", "lineout", "hpout", "earpiece", "amp gain", "output volume",
-            "master volume", "pcm volume", "audio gain")
-        for (line in out.lines()) {
-            val lower = line.lowercase()
-            if (keywords.none { lower.contains(it) }) continue
-            val nameMatch = Regex("^\\s*\\d+\\s+(.+?)\\s{2,}").find(line)
-                ?: Regex("^\\s*(.+?)\\s+\\d+").find(line)
-            val ctrlName = nameMatch?.groupValues?.get(1)?.trim() ?: continue
-            val rangeMatch = Regex("range\\s+(\\d+)->\\s*(\\d+)").find(line)
-            val maxVal = rangeMatch?.groupValues?.get(2)?.toIntOrNull() ?: 100
-            RootHelper.runAsRoot("tinymix '$ctrlName' $maxVal 2>/dev/null || true")
+    private fun restoreAudioPolicyVolumes() {
+        val candidates = listOf(
+            "/vendor/etc/audio_policy_volumes.xml",
+            "/system/etc/audio_policy_volumes.xml",
+            "/odm/etc/audio_policy_volumes.xml",
+            "/vendor/etc/audio/audio_policy_volumes.xml"
+        )
+        for (src in candidates) {
+            val bak = "$src.bak"
+            val (bakExists, _) = RootHelper.runAsRoot("test -f $bak")
+            if (bakExists) {
+                RootHelper.runAsRoot("cp $bak $src && chmod 644 $src")
+                RootHelper.runAsRoot("killall audioserver 2>/dev/null || true")
+                RootHelper.runAsRoot("stop audioserver 2>/dev/null; start audioserver 2>/dev/null || true")
+                break
+            }
         }
     }
 

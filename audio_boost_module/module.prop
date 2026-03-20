@@ -1,0 +1,6 @@
+id=audio_boost
+name=Audio Volume Boost
+version=v0.1
+versionCode=1
+author=Sinan Aslan
+description=Hoparlor ses amplifikasyonu - audio_policy_volumes.xml override (+6dB speaker boost)

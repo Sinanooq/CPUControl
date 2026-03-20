@@ -10,13 +10,37 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val p = context.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
 
-        // Şarj takıldığında ekran süresi sıfırlama noktasını kaydet
+        // Şarj takıldığında session sıfırla (Battery Guru mantığı)
         if (intent.action == Intent.ACTION_POWER_CONNECTED) {
-            p.edit().putLong("charge_start_time", System.currentTimeMillis()).apply()
+            val now = System.currentTimeMillis()
+            p.edit()
+                .putLong("session_start_wall",    now)
+                .putLong("session_start_elapsed", android.os.SystemClock.elapsedRealtime())
+                .putLong("session_start_uptime",  android.os.SystemClock.uptimeMillis())
+                .putLong("charge_start_time", now)
+                .apply()
+            return
+        }
+
+        // Şarjdan çekilince de session sıfırla
+        if (intent.action == Intent.ACTION_POWER_DISCONNECTED) {
+            val now = System.currentTimeMillis()
+            p.edit()
+                .putLong("session_start_wall",    now)
+                .putLong("session_start_elapsed", android.os.SystemClock.elapsedRealtime())
+                .putLong("session_start_uptime",  android.os.SystemClock.uptimeMillis())
+                .apply()
             return
         }
 
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
+
+        // Bildirim servisi açıksa yeniden başlat
+        val notifEnabled = p.getBoolean("screen_time_notif", false)
+        if (notifEnabled) {
+            val svc = Intent(context, ScreenTimeNotificationService::class.java)
+            context.startForegroundService(svc)
+        }
 
         val littleMin = p.getInt("little_min", 169000)
         val littleMax = p.getInt("little_max", 2200000)
