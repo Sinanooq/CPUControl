@@ -227,6 +227,61 @@ class NetworkFragment : Fragment() {
             }
         }
 
+        // Hotspot Gizleme
+        val switchMss         = view.findViewById<SwitchMaterial>(R.id.switchMss)
+        val switchDscp        = view.findViewById<SwitchMaterial>(R.id.switchDscp)
+        val switchTetherFlag  = view.findViewById<SwitchMaterial>(R.id.switchTetherFlag)
+        val switchIpv6Disable = view.findViewById<SwitchMaterial>(R.id.switchIpv6Disable)
+        val tvHotspotStatus   = view.findViewById<TextView>(R.id.tvHotspotHideStatus)
+
+        switchMss.isChecked = prefs.getBoolean("mss_clamp", false)
+        switchMss.setOnCheckedChangeListener { _, checked ->
+            scope.launch {
+                val ok = withContext(Dispatchers.IO) {
+                    if (checked) RootHelper.applyMssClamping() else RootHelper.resetMssClamping()
+                }
+                prefs.edit().putBoolean("mss_clamp", checked && ok).apply()
+                tvHotspotStatus.text = if (ok) "Uygulandı" else "Başarısız — root gerekli"
+                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
+                if (!ok) switchMss.isChecked = false
+            }
+        }
+
+        switchDscp.isChecked = prefs.getBoolean("dscp_zero", false)
+        switchDscp.setOnCheckedChangeListener { _, checked ->
+            scope.launch {
+                val ok = withContext(Dispatchers.IO) {
+                    if (checked) RootHelper.applyDscpZero() else RootHelper.resetDscpZero()
+                }
+                prefs.edit().putBoolean("dscp_zero", checked && ok).apply()
+                tvHotspotStatus.text = if (ok) "Uygulandı" else "Başarısız — root gerekli"
+                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
+                if (!ok) switchDscp.isChecked = false
+            }
+        }
+
+        switchTetherFlag.isChecked = prefs.getBoolean("tether_flag", false)
+        switchTetherFlag.setOnCheckedChangeListener { _, checked ->
+            scope.launch {
+                val ok = withContext(Dispatchers.IO) { if (checked) RootHelper.hideTetherFlags() else true }
+                prefs.edit().putBoolean("tether_flag", checked && ok).apply()
+                tvHotspotStatus.text = if (ok) "Uygulandı" else "Başarısız — root gerekli"
+                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
+                if (!ok) switchTetherFlag.isChecked = false
+            }
+        }
+
+        switchIpv6Disable.isChecked = prefs.getBoolean("ipv6_disable", false)
+        switchIpv6Disable.setOnCheckedChangeListener { _, checked ->
+            scope.launch {
+                val ok = withContext(Dispatchers.IO) { RootHelper.setIpv6Disabled(checked) }
+                prefs.edit().putBoolean("ipv6_disable", checked && ok).apply()
+                tvHotspotStatus.text = if (ok) if (checked) "IPv6 kapatıldı" else "IPv6 açıldı" else "Başarısız — root gerekli"
+                tvHotspotStatus.setTextColor(requireContext().getColor(if (ok) R.color.accent_green else R.color.accent_orange))
+                if (!ok) switchIpv6Disable.isChecked = false
+            }
+        }
+
         // TTL Fix
         val switchTtl    = view.findViewById<SwitchMaterial>(R.id.switchTtl)
         val tvTtlCurrent = view.findViewById<TextView>(R.id.tvTtlCurrent)

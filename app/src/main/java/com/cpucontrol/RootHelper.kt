@@ -290,6 +290,63 @@ object RootHelper {
         return out.contains("MASQUERADE")
     }
 
+    // ── Hotspot Gizleme ─────────────────────────────────────────────────────
+    fun applyMssClamping(): Boolean {
+        val cmds = listOf(
+            "iptables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true",
+            "iptables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452",
+            "ip6tables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true",
+            "ip6tables -t mangle -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
+    fun resetMssClamping(): Boolean {
+        val cmds = listOf(
+            "iptables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true",
+            "ip6tables -t mangle -D FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --set-mss 1452 2>/dev/null || true"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
+    fun applyDscpZero(): Boolean {
+        val cmds = listOf(
+            "iptables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true",
+            "iptables -t mangle -A POSTROUTING -j DSCP --set-dscp 0",
+            "ip6tables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true",
+            "ip6tables -t mangle -A POSTROUTING -j DSCP --set-dscp 0"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
+    fun resetDscpZero(): Boolean {
+        val cmds = listOf(
+            "iptables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true",
+            "ip6tables -t mangle -D POSTROUTING -j DSCP --set-dscp 0 2>/dev/null || true"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
+    fun hideTetherFlags(): Boolean {
+        val cmds = listOf(
+            "setprop net.tethering.noti 0",
+            "setprop persist.sys.tethering 0",
+            "settings put global tether_supported 0 2>/dev/null || true"
+        )
+        var ok = false
+        for (cmd in cmds) { if (runAsRoot(cmd).first) ok = true }
+        return ok
+    }
+
+    fun setIpv6Disabled(disable: Boolean): Boolean {
+        val v = if (disable) "1" else "0"
+        val cmds = listOf(
+            "echo $v > /proc/sys/net/ipv6/conf/all/disable_ipv6",
+            "echo $v > /proc/sys/net/ipv6/conf/default/disable_ipv6"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
     // ── TTL Fix (Hotspot tespitini engelle) ─────────────────────────────────
     fun getTtl(): Int {
         val (_, o) = runAsRoot("cat /proc/sys/net/ipv4/ip_default_ttl")
