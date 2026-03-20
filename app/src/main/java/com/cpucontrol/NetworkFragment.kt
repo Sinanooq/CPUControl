@@ -1,6 +1,9 @@
 package com.cpucontrol
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 
 class NetworkFragment : Fragment() {
@@ -17,18 +21,53 @@ class NetworkFragment : Fragment() {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val refreshRates = listOf(60, 90, 120)
 
+    private lateinit var switchTethering: SwitchMaterial
+    private lateinit var tvTetheringInfo: TextView
+    private lateinit var tvTetheringStatus: TextView
+
+    private val shareReceiver = object : BroadcastReceiver() {
+        override fun onReceive(ctx: Context, intent: Intent) {
+            val status = intent.getStringExtra(WifiShareService.EXTRA_STATUS) ?: return
+            val msg    = intent.getStringExtra(WifiShareService.EXTRA_MSG) ?: ""
+            when (status) {
+                "running" -> {
+                    switchTethering.isChecked = true
+                    tvTetheringInfo.text = "SSID: ${WifiShareService.groupSsid}  •  Şifre: ${WifiShareService.groupPass}"
+                    tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik internet alır"
+                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
+                }
+                "error" -> {
+                    switchTethering.isChecked = false
+                    tvTetheringInfo.text = ""
+                    tvTetheringStatus.text = "Hata: $msg"
+                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
+                }
+                "stopped" -> {
+                    switchTethering.isChecked = false
+                    tvTetheringInfo.text = ""
+                    tvTetheringStatus.text = "Durduruldu"
+                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
+                }
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_network, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        // Tethering
-        val switchTethering  = view.findViewById<SwitchMaterial>(R.id.switchTethering)
-        val tvTetheringInfo  = view.findViewById<TextView>(R.id.tvTetheringInfo)
-        val tvTetheringStatus = view.findViewById<TextView>(R.id.tvTetheringStatus)
+        switchTethering   = view.findViewById(R.id.switchTethering)
+        tvTetheringInfo   = view.findViewById(R.id.tvTetheringInfo)
+        tvTetheringStatus = view.findViewById(R.id.tvTetheringStatus)
+        val etSsid = view.findViewById<EditText>(R.id.etShareSsid)
+        val etPass = view.findViewById<EditText>(R.id.etSharePass)
+        val prefs  = requireContext().getSharedPreferences("cpu_prefs", 0)
 
-        // Mevcut durumu yansıt
-        switchTethering.isChecked = WifiShareService.isRunning
+        etSsid.setText(prefs.getString("share_ssid", "CPUControl"))
+        etPass.setText(prefs.getString("share_pass", "cpucontrol123"))
+
         if (WifiShareService.isRunning) {
+            switchTethering.isChecked = true
             tvTetheringInfo.text = "SSID: ${WifiShareService.groupSsid}  •  Şifre: ${WifiShareService.groupPass}"
             tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik internet alır"
             tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
@@ -37,33 +76,24 @@ class NetworkFragment : Fragment() {
         switchTethering.setOnCheckedChangeListener { _, checked ->
             val ctx = requireContext()
             if (checked) {
+                val ssid = etSsid.text.toString().trim().ifEmpty { "CPUControl" }
+                val pass = etPass.text.toString().trim().ifEmpty { "cpucontrol123" }
+                prefs.edit().putString("share_ssid", ssid).putString("share_pass", pass).apply()
                 ctx.startForegroundService(
-                    Intent(ctx, WifiShareService::class.java).setAction(WifiShareService.ACTION_START)
+                    Intent(ctx, WifiShareService::class.java)
+                        .setAction(WifiShareService.ACTION_START)
+                        .putExtra(WifiShareService.EXTRA_SSID, ssid)
+                        .putExtra(WifiShareService.EXTRA_PASS, pass)
                 )
                 tvTetheringStatus.text = "Başlatılıyor..."
                 tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
-                // 3 sn sonra bilgileri göster
-                scope.launch {
-                    delay(3000)
-                    if (WifiShareService.isRunning) {
-                        tvTetheringInfo.text = "SSID: ${WifiShareService.groupSsid}  •  Şifre: ${WifiShareService.groupPass}"
-                        tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik internet alır"
-                        tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
-                    } else {
-                        switchTethering.isChecked = false
-                        tvTetheringStatus.text = "Başlatılamadı"
-                        tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
-                    }
-                }
             } else {
-                ctx.startService(
-                    Intent(ctx, WifiShareService::class.java).setAction(WifiShareService.ACTION_STOP)
-                )
-                tvTetheringInfo.text = ""
-                tvTetheringStatus.text = "Durduruldu"
-                tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
+                ctx.startService(Intent(ctx, WifiShareService::class.java).setAction(WifiShareService.ACTION_STOP))
             }
         }
+
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(shareReceiver, IntentFilter(WifiShareService.BROADCAST_STATUS))
 
         val switchTcp        = view.findViewById<SwitchMaterial>(R.id.switchTcp)
         val switchLowLatency = view.findViewById<SwitchMaterial>(R.id.switchLowLatency)
@@ -201,6 +231,7 @@ class NetworkFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(shareReceiver)
         scope.cancel()
     }
 }
