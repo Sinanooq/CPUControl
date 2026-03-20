@@ -19,7 +19,7 @@
     <uses-feature android:name="android.hardware.wifi.direct" android:required="false"/>
 
     <application
-        android:label="İşlemci Kontrolü"
+        android:label="KernelKit"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.CPUControl"
@@ -28,7 +28,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="İşlemci Kontrolü"
+            android:label="KernelKit"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

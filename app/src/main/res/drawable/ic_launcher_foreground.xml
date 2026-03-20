@@ -5,82 +5,103 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Chip gövdesi — köşe yuvarlatılmış kare, cyan stroke -->
+    <!-- Hexagon çerçeve (düz kenar üstte) -->
     <path
-        android:fillColor="#0F1520"
+        android:fillColor="#00000000"
         android:strokeColor="#00D4FF"
-        android:strokeWidth="2.5"
-        android:pathData="M34,34 Q34,30 38,30 L70,30 Q74,30 74,34 L74,74 Q74,78 70,78 L38,78 Q34,78 34,74 Z"/>
+        android:strokeWidth="2.8"
+        android:pathData="M54,18 L82,33 L82,63 L54,78 L26,63 L26,33 Z"/>
 
-    <!-- İç chip çekirdeği — koyu kare -->
+    <!-- İç hexagon — ince, soluk -->
     <path
-        android:fillColor="#08090E"
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="0.9"
+        android:strokeAlpha="0.25"
+        android:pathData="M54,26 L76,38.5 L76,63.5 L54,76 L32,63.5 L32,38.5 Z"/>
+
+    <!-- Hexagon köşe noktaları — parlak dot -->
+    <path android:fillColor="#00D4FF" android:pathData="M54,16 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0"/>
+    <path android:fillColor="#00D4FF" android:pathData="M82,31 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0"/>
+    <path android:fillColor="#00D4FF" android:pathData="M82,63 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0"/>
+    <path android:fillColor="#00D4FF" android:pathData="M54,79 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0"/>
+    <path android:fillColor="#00D4FF" android:pathData="M26,63 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0"/>
+    <path android:fillColor="#00D4FF" android:pathData="M26,31 m-2.2,0 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0"/>
+
+    <!-- "K" harfi — sol -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M38,36 L38,72"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M38,54 L52,36"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="4.5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M38,54 L52,72"/>
+
+    <!-- "K" harfi — sağ (biraz daha küçük, cyan) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="3.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M56,40 L56,70"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="3.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M56,55 L68,40"/>
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="3.8"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M56,55 L68,70"/>
+
+    <!-- Circuit trace — sol üst -->
+    <path
+        android:fillColor="#00000000"
         android:strokeColor="#00D4FF"
         android:strokeWidth="1.2"
-        android:pathData="M43,43 Q43,41 45,41 L63,41 Q65,41 65,43 L65,65 Q65,67 63,67 L45,67 Q43,67 43,65 Z"/>
-
-    <!-- İç grid çizgileri — 3x3 -->
-    <path
-        android:strokeColor="#00D4FF"
-        android:strokeWidth="0.8"
         android:strokeAlpha="0.5"
-        android:fillColor="#00000000"
-        android:pathData="M43,49 L65,49 M43,54 L65,54 M43,59 L65,59"/>
+        android:pathData="M26,33 L18,33 L18,26"/>
+    <path android:fillColor="#00D4FF" android:fillAlpha="0.6"
+        android:pathData="M16,24 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
+
+    <!-- Circuit trace — sağ üst -->
     <path
+        android:fillColor="#00000000"
         android:strokeColor="#00D4FF"
-        android:strokeWidth="0.8"
+        android:strokeWidth="1.2"
         android:strokeAlpha="0.5"
-        android:fillColor="#00000000"
-        android:pathData="M49,41 L49,67 M54,41 L54,67 M59,41 L59,67"/>
+        android:pathData="M82,33 L90,33 L90,26"/>
+    <path android:fillColor="#00D4FF" android:fillAlpha="0.6"
+        android:pathData="M90,24 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
 
-    <!-- Merkez nokta — parlak -->
+    <!-- Circuit trace — alt orta -->
     <path
-        android:fillColor="#00D4FF"
-        android:pathData="M52,52 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
-
-    <!-- SOL pinler — 4 adet -->
-    <path android:fillColor="#00D4FF" android:pathData="M22,38 L34,38 L34,40.5 L22,40.5 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M22,46 L34,46 L34,48.5 L22,48.5 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M22,59 L34,59 L34,61.5 L22,61.5 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M22,67 L34,67 L34,69.5 L22,69.5 Z"/>
-
-    <!-- SAĞ pinler — 4 adet -->
-    <path android:fillColor="#00D4FF" android:pathData="M74,38 L86,38 L86,40.5 L74,40.5 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M74,46 L86,46 L86,48.5 L74,48.5 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M74,59 L86,59 L86,61.5 L74,61.5 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M74,67 L86,67 L86,69.5 L74,69.5 Z"/>
-
-    <!-- ÜST pinler — 4 adet -->
-    <path android:fillColor="#00D4FF" android:pathData="M38,22 L40.5,22 L40.5,34 L38,34 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M46,22 L48.5,22 L48.5,34 L46,34 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M59,22 L61.5,22 L61.5,34 L59,34 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M67,22 L69.5,22 L69.5,34 L67,34 Z"/>
-
-    <!-- ALT pinler — 4 adet -->
-    <path android:fillColor="#00D4FF" android:pathData="M38,74 L40.5,74 L40.5,86 L38,86 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M46,74 L48.5,74 L48.5,86 L46,86 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M59,74 L61.5,74 L61.5,86 L59,86 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M67,74 L69.5,74 L69.5,86 L67,86 Z"/>
-
-    <!-- Pin uç noktaları — küçük kareler -->
-    <path android:fillColor="#00D4FF" android:pathData="M20,37.5 L23,37.5 L23,41 L20,41 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M20,45.5 L23,45.5 L23,49 L20,49 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M20,58.5 L23,58.5 L23,62 L20,62 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M20,66.5 L23,66.5 L23,70 L20,70 Z"/>
-
-    <path android:fillColor="#00D4FF" android:pathData="M85,37.5 L88,37.5 L88,41 L85,41 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M85,45.5 L88,45.5 L88,49 L85,49 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M85,58.5 L88,58.5 L88,62 L85,62 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M85,66.5 L88,66.5 L88,70 L85,70 Z"/>
-
-    <path android:fillColor="#00D4FF" android:pathData="M37.5,20 L41,20 L41,23 L37.5,23 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M45.5,20 L49,20 L49,23 L45.5,23 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M58.5,20 L62,20 L62,23 L58.5,23 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M66.5,20 L70,20 L70,23 L66.5,23 Z"/>
-
-    <path android:fillColor="#00D4FF" android:pathData="M37.5,85 L41,85 L41,88 L37.5,88 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M45.5,85 L49,85 L49,88 L45.5,88 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M58.5,85 L62,85 L62,88 L58.5,88 Z"/>
-    <path android:fillColor="#00D4FF" android:pathData="M66.5,85 L70,85 L70,88 L66.5,88 Z"/>
+        android:fillColor="#00000000"
+        android:strokeColor="#00D4FF"
+        android:strokeWidth="1.2"
+        android:strokeAlpha="0.5"
+        android:pathData="M54,79 L54,90 L62,90"/>
+    <path android:fillColor="#00D4FF" android:fillAlpha="0.6"
+        android:pathData="M64,90 m-2,0 a2,2 0 1,0 4,0 a2,2 0 1,0 -4,0"/>
 
 </vector>

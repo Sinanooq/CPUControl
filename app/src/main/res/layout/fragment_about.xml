@@ -34,7 +34,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:text="İşlemci Kontrolü"
+                    android:text="KernelKit"
                     android:textSize="26sp"
                     android:textStyle="bold"
                     android:textColor="@color/accent_cyan"
@@ -80,6 +80,220 @@
                     android:layout_marginTop="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── SİSTEM BİLGİSİ ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardSysInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/accent_green_dim"
+            app:strokeWidth="1dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView android:text="📱  CİHAZ BİLGİSİ"
+                    android:textSize="10sp" android:textColor="@color/accent_green"
+                    android:textStyle="bold" android:letterSpacing="0.12"
+                    android:layout_marginBottom="14dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Cihaz" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysDevice" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Android" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysAndroid" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Kernel" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysKernel" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Build" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysBuild" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Mimari" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysArch" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Güvenlik" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysSecPatch" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="RAM" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysRamTotal" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Depolama" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysStorage" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Root" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysRootStatus" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/accent_green"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Pil" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysBatLevel" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/accent_green"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Pil Sıcaklık" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysBatTemp" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Voltaj" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysBatVolt" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="Pil Sağlık" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysBatHealth" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="CPU Sıcaklık" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysCpuTemp" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/accent_orange"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="GPU Frekans" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysGpuFreq" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/accent_yellow"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="8dp">
+                    <TextView android:text="TCP" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysTcp" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/accent_cyan"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView android:text="Governor" android:textSize="11sp"
+                        android:textColor="@color/text_hint" android:layout_width="100dp"
+                        android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/tvSysGovernor" android:text="—"
+                        android:textSize="11sp" android:textColor="@color/text_primary"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
