@@ -113,9 +113,8 @@ class ScreenTimeFragment : Fragment() {
     private fun collectData(): ScreenData {
         val ctx = requireContext()
 
-        // Uptime ve deep sleep
-        val uptimeMs    = android.os.SystemClock.elapsedRealtime()
-        val deepSleepMs = uptimeMs - android.os.SystemClock.uptimeMillis()
+        // Toplam uptime (cihaz açılışından beri)
+        val uptimeMs = android.os.SystemClock.elapsedRealtime()
 
         // Şarj başlangıç zamanı varsa onu kullan, yoksa son 24 saat
         val now = System.currentTimeMillis()
@@ -180,6 +179,8 @@ class ScreenTimeFragment : Fragment() {
             appFgTotal[pkg] = (appFgTotal[pkg] ?: 0L) + (now - start)
         }
 
+        // Deep sleep ≈ ekran kapalı süre (SCREEN_NON_INTERACTIVE = CPU suspend başlangıcı)
+        val deepSleepMs = screenOffMs
         val pm2 = ctx.packageManager
         val appUsages = appFgTotal
             .filter { it.value > 0 }
