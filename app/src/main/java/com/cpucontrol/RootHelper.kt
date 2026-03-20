@@ -200,6 +200,60 @@ object RootHelper {
     // ── Root kontrolü ───────────────────────────────────────────────────────
     fun checkRoot(): Boolean = runAsRoot("id").first
 
+    // ── Tethering (NAT) ─────────────────────────────────────────────────────
+    fun getUpstreamInterface(): String {
+        // Mobil veri interface'ini bul (rmnet, ccmni, vs.)
+        val (_, out) = runAsRoot("ip route show default")
+        val match = Regex("dev\\s+(\\S+)").find(out)
+        return match?.groupValues?.get(1) ?: "rmnet0"
+    }
+
+    fun getHotspotInterface(): String {
+        // Hotspot interface'ini bul (ap0, wlan1, softap0, vs.)
+        val candidates = listOf("ap0", "wlan1", "softap0", "wlan0")
+        for (iface in candidates) {
+            val (ok, out) = runAsRoot("ip addr show $iface 2>/dev/null")
+            if (ok && out.contains("192.168.49.1")) return iface
+        }
+        // Fallback: 192.168.49.x subnet'ini ara
+        val (_, out2) = runAsRoot("ip addr | grep '192.168.49'")
+        val m = Regex("\\s(\\S+)$").find(out2.trim())
+        return m?.groupValues?.get(1) ?: "ap0"
+    }
+
+    fun startTethering(): Pair<Boolean, String> {
+        val upstream = getUpstreamInterface()
+        val hotspot  = getHotspotInterface()
+        val cmds = listOf(
+            "echo 1 > /proc/sys/net/ipv4/ip_forward",
+            "iptables -t nat -D POSTROUTING -o $upstream -j MASQUERADE 2>/dev/null || true",
+            "iptables -D FORWARD -i $hotspot -o $upstream -j ACCEPT 2>/dev/null || true",
+            "iptables -D FORWARD -i $upstream -o $hotspot -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null || true",
+            "iptables -t nat -A POSTROUTING -o $upstream -j MASQUERADE",
+            "iptables -A FORWARD -i $hotspot -o $upstream -j ACCEPT",
+            "iptables -A FORWARD -i $upstream -o $hotspot -m state --state RELATED,ESTABLISHED -j ACCEPT"
+        )
+        val ok = cmds.all { runAsRoot(it).first }
+        return Pair(ok, "upstream=$upstream hotspot=$hotspot")
+    }
+
+    fun stopTethering(): Boolean {
+        val upstream = getUpstreamInterface()
+        val hotspot  = getHotspotInterface()
+        val cmds = listOf(
+            "echo 0 > /proc/sys/net/ipv4/ip_forward",
+            "iptables -t nat -D POSTROUTING -o $upstream -j MASQUERADE 2>/dev/null || true",
+            "iptables -D FORWARD -i $hotspot -o $upstream -j ACCEPT 2>/dev/null || true",
+            "iptables -D FORWARD -i $upstream -o $hotspot -m state --state RELATED,ESTABLISHED -j ACCEPT 2>/dev/null || true"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
+    fun isTetheringActive(): Boolean {
+        val (_, out) = runAsRoot("iptables -t nat -L POSTROUTING -n")
+        return out.contains("MASQUERADE")
+    }
+
     // ── DNS ─────────────────────────────────────────────────────────────────
     fun setDns(dns1: String, dns2: String): Boolean {
         val cmds = listOf(

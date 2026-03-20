@@ -20,6 +20,45 @@ class NetworkFragment : Fragment() {
         inflater.inflate(R.layout.fragment_network, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        // Tethering
+        val switchTethering  = view.findViewById<SwitchMaterial>(R.id.switchTethering)
+        val tvTetheringInfo  = view.findViewById<TextView>(R.id.tvTetheringInfo)
+        val tvTetheringStatus = view.findViewById<TextView>(R.id.tvTetheringStatus)
+
+        scope.launch {
+            val active = withContext(Dispatchers.IO) { RootHelper.isTetheringActive() }
+            switchTethering.isChecked = active
+            if (active) {
+                val upstream = withContext(Dispatchers.IO) { RootHelper.getUpstreamInterface() }
+                val hotspot  = withContext(Dispatchers.IO) { RootHelper.getHotspotInterface() }
+                tvTetheringInfo.text = "upstream: $upstream  •  hotspot: $hotspot"
+            }
+        }
+
+        switchTethering.setOnCheckedChangeListener { _, checked ->
+            scope.launch {
+                tvTetheringStatus.text = if (checked) "Başlatılıyor..." else "Durduruluyor..."
+                tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
+                if (checked) {
+                    val (ok, info) = withContext(Dispatchers.IO) { RootHelper.startTethering() }
+                    if (ok) {
+                        tvTetheringInfo.text = info
+                        tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik IP alır"
+                        tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
+                    } else {
+                        switchTethering.isChecked = false
+                        tvTetheringStatus.text = "Başlatılamadı — hotspot açık mı?"
+                        tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
+                    }
+                } else {
+                    withContext(Dispatchers.IO) { RootHelper.stopTethering() }
+                    tvTetheringInfo.text = ""
+                    tvTetheringStatus.text = "Durduruldu"
+                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
+                }
+            }
+        }
+
         val switchTcp        = view.findViewById<SwitchMaterial>(R.id.switchTcp)
         val switchLowLatency = view.findViewById<SwitchMaterial>(R.id.switchLowLatency)
         val switchWifi       = view.findViewById<SwitchMaterial>(R.id.switchWifiPowerSave)
