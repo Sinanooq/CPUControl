@@ -67,16 +67,24 @@ class WifiShareService : Service() {
 
     private fun startShare() {
         startForeground(NOTIF_ID, buildNotification("Başlatılıyor..."))
-        // main thread'de çağrılmalı
         mainHandler.post {
-            p2pManager.removeGroup(p2pChannel, object : ActionListener {
-                override fun onSuccess() { mainHandler.postDelayed({ createGroup() }, 500) }
-                override fun onFailure(r: Int) { createGroup() }
+            // Önce P2P'yi tamamen sıfırla
+            p2pManager.cancelConnect(p2pChannel, object : ActionListener {
+                override fun onSuccess() { removeGroupThenCreate() }
+                override fun onFailure(r: Int) { removeGroupThenCreate() }
             })
         }
     }
 
+    private fun removeGroupThenCreate() {
+        p2pManager.removeGroup(p2pChannel, object : ActionListener {
+            override fun onSuccess() { mainHandler.postDelayed({ createGroup() }, 800) }
+            override fun onFailure(r: Int) { mainHandler.postDelayed({ createGroup() }, 800) }
+        })
+    }
+
     private fun createGroup() {
+        updateNotification("WiFi Direct grubu oluşturuluyor...")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val ssid = if (pendingSsid.startsWith("DIRECT-")) pendingSsid else "DIRECT-${pendingSsid}"
             val config = WifiP2pConfig.Builder()
@@ -84,12 +92,20 @@ class WifiShareService : Service() {
                 .setPassphrase(pendingPass)
                 .build()
             p2pManager.createGroup(p2pChannel, config, object : ActionListener {
-                override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1000) }
-                override fun onFailure(r: Int) { onError("Grup oluşturulamadı (kod $r)") }
+                override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
+                override fun onFailure(r: Int) {
+                    // Özel config başarısız → varsayılan ile dene (SSID/şifre sistem tarafından atanır)
+                    mainHandler.postDelayed({
+                        p2pManager.createGroup(p2pChannel, object : ActionListener {
+                            override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
+                            override fun onFailure(r2: Int) { onError("Grup oluşturulamadı (kod $r2) — WiFi açık mı?") }
+                        })
+                    }, 1000)
+                }
             })
         } else {
             p2pManager.createGroup(p2pChannel, object : ActionListener {
-                override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1000) }
+                override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
                 override fun onFailure(r: Int) { onError("Grup oluşturulamadı (kod $r)") }
             })
         }

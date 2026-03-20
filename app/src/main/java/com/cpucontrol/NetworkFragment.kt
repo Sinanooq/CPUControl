@@ -1,14 +1,19 @@
 package com.cpucontrol
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.button.MaterialButton
@@ -18,6 +23,48 @@ import kotlinx.coroutines.*
 
 class NetworkFragment : Fragment() {
 
+    // NEARBY_WIFI_DEVICES izin launcher
+    private val nearbyWifiPermLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) startWifiShare()
+        else {
+            tvTetheringStatus.text = "İzin reddedildi: NEARBY_WIFI_DEVICES gerekli"
+            tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
+            switchTethering.isChecked = false
+        }
+    }
+
+    private fun checkAndStartShare() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val perm = Manifest.permission.NEARBY_WIFI_DEVICES
+            if (ContextCompat.checkSelfPermission(requireContext(), perm) == PackageManager.PERMISSION_GRANTED) {
+                startWifiShare()
+            } else {
+                nearbyWifiPermLauncher.launch(perm)
+            }
+        } else {
+            startWifiShare()
+        }
+    }
+
+    private fun startWifiShare() {
+        val ctx  = requireContext()
+        val etSsid = view?.findViewById<EditText>(R.id.etShareSsid) ?: return
+        val etPass = view?.findViewById<EditText>(R.id.etSharePass) ?: return
+        val prefs  = ctx.getSharedPreferences("cpu_prefs", 0)
+        val ssid = etSsid.text.toString().trim().ifEmpty { "CPUControl" }
+        val pass = etPass.text.toString().trim().ifEmpty { "cpucontrol123" }
+        prefs.edit().putString("share_ssid", ssid).putString("share_pass", pass).apply()
+        ctx.startForegroundService(
+            Intent(ctx, WifiShareService::class.java)
+                .setAction(WifiShareService.ACTION_START)
+                .putExtra(WifiShareService.EXTRA_SSID, ssid)
+                .putExtra(WifiShareService.EXTRA_PASS, pass)
+        )
+        tvTetheringStatus.text = "Başlatılıyor..."
+        tvTetheringStatus.setTextColor(ctx.getColor(R.color.text_secondary))
+    }
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val refreshRates = listOf(60, 90, 120)
 
@@ -76,17 +123,7 @@ class NetworkFragment : Fragment() {
         switchTethering.setOnCheckedChangeListener { _, checked ->
             val ctx = requireContext()
             if (checked) {
-                val ssid = etSsid.text.toString().trim().ifEmpty { "CPUControl" }
-                val pass = etPass.text.toString().trim().ifEmpty { "cpucontrol123" }
-                prefs.edit().putString("share_ssid", ssid).putString("share_pass", pass).apply()
-                ctx.startForegroundService(
-                    Intent(ctx, WifiShareService::class.java)
-                        .setAction(WifiShareService.ACTION_START)
-                        .putExtra(WifiShareService.EXTRA_SSID, ssid)
-                        .putExtra(WifiShareService.EXTRA_PASS, pass)
-                )
-                tvTetheringStatus.text = "Başlatılıyor..."
-                tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
+                checkAndStartShare()
             } else {
                 ctx.startService(Intent(ctx, WifiShareService::class.java).setAction(WifiShareService.ACTION_STOP))
             }
