@@ -200,21 +200,32 @@ object RootHelper {
     // ── Root kontrolü ───────────────────────────────────────────────────────
     fun checkRoot(): Boolean = runAsRoot("id").first
 
-    // ── wpa_cli P2P (root ile doğrudan wpa_supplicant) ──────────────────────
-    fun wpaCliCreateGroup(ssid: String, pass: String): Pair<Boolean, String> {
-        // wlan0 interface adını bul
-        val iface = getWlanInterface()
-        // Önce temizle
-        runAsRoot("wpa_cli -i $iface p2p_group_remove all 2>/dev/null || true")
-        Thread.sleep(300)
-        // P2P group oluştur (persistent=0, GO intent=15 = her zaman GO ol)
-        val (ok, out) = runAsRoot("wpa_cli -i $iface p2p_group_add")
-        if (!ok && !out.contains("OK")) return Pair(false, "wpa_cli başarısız: $out")
-        Thread.sleep(800)
-        // Oluşan interface'i bul
-        val (_, ifOut) = runAsRoot("ip link show | grep 'p2p-' | awk -F': ' '{print \$2}' | head -1")
-        val p2pIface = ifOut.trim().ifEmpty { "p2p-wlan0-0" }
-        return Pair(true, p2pIface)
+    // ── SoftAP (root ile cmd wifi) ──────────────────────────────────────────
+    fun startSoftAp(ssid: String, pass: String): Pair<Boolean, String> {
+        // Android 12+ root ile cmd wifi start-softap çalışıyor
+        val (ok, out) = runAsRoot("cmd wifi start-softap \"$ssid\" WPA2 $pass 2 false")
+        if (ok || out.contains("started") || out.contains("OK")) return Pair(true, out)
+        // Alternatif: settings + svc wifi
+        runAsRoot("settings put global wifi_ap_ssid \"$ssid\"")
+        runAsRoot("settings put global wifi_ap_passwd \"$pass\"")
+        val (ok2, out2) = runAsRoot("svc wifi hotspot enable")
+        return Pair(ok2 || out2.isEmpty(), out2)
+    }
+
+    fun getApInterface(): String {
+        // ap0, wlan1, swlan0 gibi isimler olabilir
+        val candidates = listOf("ap0", "wlan1", "swlan0", "wlan0")
+        for (iface in candidates) {
+            val (ok, _) = runAsRoot("ip link show $iface 2>/dev/null")
+            if (ok) {
+                // Bu interface'in IP'si var mı veya UP mu?
+                val (_, addr) = runAsRoot("ip addr show $iface 2>/dev/null")
+                if (addr.contains("192.168.43") || addr.contains("UP")) return iface
+            }
+        }
+        // Fallback: herhangi bir UP interface bul (wlan0 hariç)
+        val (_, out) = runAsRoot("ip link show | grep -E '(ap|wlan)[0-9]' | grep 'UP' | awk -F': ' '{print \$2}' | head -1")
+        return out.trim().ifEmpty { "ap0" }
     }
 
     fun getWlanInterface(): String {
@@ -222,15 +233,15 @@ object RootHelper {
         return out.trim().ifEmpty { "wlan0" }
     }
 
-    fun startDnsmasq(iface: String): Boolean {
+    fun startDnsmasq(iface: String, subnet: String = "192.168.43"): Boolean {
         // Önce varsa öldür
         runAsRoot("pkill -f dnsmasq 2>/dev/null || true")
         // dnsmasq binary'sini bul
         val bin = listOf("/system/bin/dnsmasq", "/system/xbin/dnsmasq", "/data/local/tmp/dnsmasq")
             .firstOrNull { runAsRoot("test -x $it").first } ?: return false
         val cmd = "$bin --interface=$iface " +
-                  "--dhcp-range=192.168.49.2,192.168.49.254,255.255.255.0,1h " +
-                  "--dhcp-option=3,192.168.49.1 " +
+                  "--dhcp-range=${subnet}.2,${subnet}.254,255.255.255.0,1h " +
+                  "--dhcp-option=3,${subnet}.1 " +
                   "--dhcp-option=6,8.8.8.8,8.8.4.4 " +
                   "--no-resolv --no-poll --keep-in-foreground &"
         return runAsRoot(cmd).first

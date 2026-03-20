@@ -1,61 +1,34 @@
 package com.cpucontrol
 
-import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import kotlinx.coroutines.*
 
 class NetworkFragment : Fragment() {
 
-    // NEARBY_WIFI_DEVICES izin launcher
-    private val nearbyWifiPermLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (granted) startWifiShare()
-        else {
-            tvTetheringStatus.text = "İzin reddedildi: NEARBY_WIFI_DEVICES gerekli"
-            tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
-            switchTethering.isChecked = false
-        }
-    }
-
     private fun checkAndStartShare() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val perm = Manifest.permission.NEARBY_WIFI_DEVICES
-            if (ContextCompat.checkSelfPermission(requireContext(), perm) == PackageManager.PERMISSION_GRANTED) {
-                startWifiShare()
-            } else {
-                nearbyWifiPermLauncher.launch(perm)
-            }
-        } else {
-            startWifiShare()
-        }
+        startWifiShare()
     }
 
     private fun startWifiShare() {
-        val ctx  = requireContext()
+        val ctx    = requireContext()
         val etSsid = view?.findViewById<EditText>(R.id.etShareSsid) ?: return
         val etPass = view?.findViewById<EditText>(R.id.etSharePass) ?: return
-        val prefs  = ctx.getSharedPreferences("cpu_prefs", 0)
-        val ssid = etSsid.text.toString().trim().ifEmpty { "CPUControl" }
-        val pass = etPass.text.toString().trim().ifEmpty { "cpucontrol123" }
-        prefs.edit().putString("share_ssid", ssid).putString("share_pass", pass).apply()
+        val ssid   = etSsid.text.toString().trim().ifEmpty { "CPUControl" }
+        val pass   = etPass.text.toString().trim().ifEmpty { "cpucontrol123" }
+        ctx.getSharedPreferences("cpu_prefs", 0)
+            .edit().putString("share_ssid", ssid).putString("share_pass", pass).apply()
         ctx.startForegroundService(
             Intent(ctx, WifiShareService::class.java)
                 .setAction(WifiShareService.ACTION_START)
