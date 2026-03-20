@@ -76,7 +76,13 @@ class WifiShareService : Service() {
         }
     }
 
+    private fun reinitChannel() {
+        try { p2pChannel.close() } catch (_: Exception) {}
+        p2pChannel = p2pManager.initialize(this, mainLooper, null)
+    }
+
     private fun removeGroupThenCreate() {
+        reinitChannel()
         p2pManager.removeGroup(p2pChannel, object : ActionListener {
             override fun onSuccess() { mainHandler.postDelayed({ createGroup() }, 800) }
             override fun onFailure(r: Int) { mainHandler.postDelayed({ createGroup() }, 800) }
@@ -94,8 +100,9 @@ class WifiShareService : Service() {
             p2pManager.createGroup(p2pChannel, config, object : ActionListener {
                 override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
                 override fun onFailure(r: Int) {
-                    // Özel config başarısız → varsayılan ile dene (SSID/şifre sistem tarafından atanır)
+                    // Özel config başarısız → channel yenile + varsayılan ile dene
                     mainHandler.postDelayed({
+                        reinitChannel()
                         p2pManager.createGroup(p2pChannel, object : ActionListener {
                             override fun onSuccess() { mainHandler.postDelayed({ fetchGroupInfo() }, 1500) }
                             override fun onFailure(r2: Int) { onError("Grup oluşturulamadı (kod $r2) — WiFi açık mı?") }
