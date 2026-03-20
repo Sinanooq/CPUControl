@@ -198,8 +198,11 @@ class ScreenTimeFragment : Fragment() {
         val events = usm.queryEvents(periodStart, now)
         var screenOnMs  = 0L
         var screenOffMs = 0L
+        // Başlangıçta ekranın açık mı kapalı mı olduğunu bilmiyoruz
+        // -1 = henüz ilk event gelmedi (belirsiz)
         var lastOnTime  = -1L
-        var lastOffTime = periodStart
+        var lastOffTime = -1L
+        var firstEventSeen = false
         val appFgStart  = mutableMapOf<String, Long>()
         val appFgTotal  = mutableMapOf<String, Long>()
         val event       = UsageEvents.Event()
@@ -208,7 +211,12 @@ class ScreenTimeFragment : Fragment() {
             events.getNextEvent(event)
             when (event.eventType) {
                 UsageEvents.Event.SCREEN_INTERACTIVE -> {
-                    // Ekran açıldı: önceki kapalı süreyi ekle
+                    // Ekran açıldı
+                    if (!firstEventSeen) {
+                        // İlk event SCREEN_ON ise: başlangıçtan bu yana kapalıydı
+                        lastOffTime = periodStart
+                        firstEventSeen = true
+                    }
                     if (lastOffTime >= 0L) {
                         screenOffMs += event.timeStamp - lastOffTime
                         lastOffTime = -1L
@@ -216,7 +224,12 @@ class ScreenTimeFragment : Fragment() {
                     lastOnTime = event.timeStamp
                 }
                 UsageEvents.Event.SCREEN_NON_INTERACTIVE -> {
-                    // Ekran kapandı: açık süreyi ekle
+                    // Ekran kapandı
+                    if (!firstEventSeen) {
+                        // İlk event SCREEN_OFF ise: başlangıçtan bu yana açıktı
+                        lastOnTime = periodStart
+                        firstEventSeen = true
+                    }
                     if (lastOnTime >= 0L) {
                         screenOnMs += event.timeStamp - lastOnTime
                         lastOnTime = -1L
@@ -232,7 +245,7 @@ class ScreenTimeFragment : Fragment() {
             }
         }
         // Hâlâ açıksa şimdiye kadar say
-        if (lastOnTime >= 0L)  screenOnMs  += now - lastOnTime
+        if (lastOnTime >= 0L) screenOnMs  += now - lastOnTime
         if (lastOffTime >= 0L && lastOnTime < 0L) screenOffMs += now - lastOffTime
         // Hâlâ foreground'da olan uygulamalar
         appFgStart.forEach { (pkg, start) ->
@@ -243,7 +256,13 @@ class ScreenTimeFragment : Fragment() {
         val awakeMs = (sessionElapsedMs - deepSleepMs).coerceAtLeast(0L)
 
         val pm = ctx.packageManager
-        val appUsages = appFgTotal.filter { it.value > 0 }.map { (pkg, ms) ->
+        val appUsages = appFgTotal.filter { (pkg, ms) ->
+            if (ms <= 0) return@filter false
+            // Sistem uygulamalarını ve launcher'ı filtrele
+            val info = try { pm.getApplicationInfo(pkg, 0) } catch (_: Exception) { return@filter false }
+            val isSystem = (info.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0
+            !isSystem
+        }.map { (pkg, ms) ->
             val label = try { pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() }
                         catch (_: Exception) { pkg }
             AppUsage(label, ms)

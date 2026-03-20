@@ -123,7 +123,8 @@ class ScreenTimeNotificationService : Service() {
         var screenOnMs  = 0L
         var screenOffMs = 0L
         var lastOnTime  = -1L
-        var lastOffTime = periodStart
+        var lastOffTime = -1L
+        var firstEventSeen = false
         val appFgStart  = mutableMapOf<String, Long>()
         val appFgTotal  = mutableMapOf<String, Long>()
         val event       = UsageEvents.Event()
@@ -132,10 +133,12 @@ class ScreenTimeNotificationService : Service() {
             events.getNextEvent(event)
             when (event.eventType) {
                 UsageEvents.Event.SCREEN_INTERACTIVE -> {
+                    if (!firstEventSeen) { lastOffTime = periodStart; firstEventSeen = true }
                     if (lastOffTime >= 0L) { screenOffMs += event.timeStamp - lastOffTime; lastOffTime = -1L }
                     lastOnTime = event.timeStamp
                 }
                 UsageEvents.Event.SCREEN_NON_INTERACTIVE -> {
+                    if (!firstEventSeen) { lastOnTime = periodStart; firstEventSeen = true }
                     if (lastOnTime >= 0L) { screenOnMs += event.timeStamp - lastOnTime; lastOnTime = -1L }
                     lastOffTime = event.timeStamp
                 }
@@ -156,7 +159,12 @@ class ScreenTimeNotificationService : Service() {
         val awakeMs = (sessionElapsedMs - deepSleepMs).coerceAtLeast(0L)
 
         val pm = ctx.packageManager
-        val appUsages = appFgTotal.filter { it.value > 0 }.map { (pkg, ms) ->
+        val appUsages = appFgTotal.filter { (pkg, ms) ->
+            if (ms <= 0) return@filter false
+            val info = try { pm.getApplicationInfo(pkg, 0) } catch (_: Exception) { return@filter false }
+            val isSystem = (info.flags and android.content.pm.ApplicationInfo.FLAG_SYSTEM) != 0
+            !isSystem
+        }.map { (pkg, ms) ->
             val label = try { pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() }
                         catch (_: Exception) { pkg }
             ScreenTimeFragment.AppUsage(label, ms)
@@ -174,9 +182,10 @@ class ScreenTimeNotificationService : Service() {
 
     private fun createChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val ch = NotificationChannel(CHANNEL, "Ekran Süresi", NotificationManager.IMPORTANCE_LOW).apply {
+            val ch = NotificationChannel(CHANNEL, "Ekran Süresi", NotificationManager.IMPORTANCE_DEFAULT).apply {
                 setShowBadge(false)
                 setSound(null, null)
+                enableVibration(false)
             }
             getSystemService(NotificationManager::class.java).createNotificationChannel(ch)
         }
