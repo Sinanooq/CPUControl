@@ -290,6 +290,31 @@ object RootHelper {
         return out.contains("MASQUERADE")
     }
 
+    // ── TTL Fix (Hotspot tespitini engelle) ─────────────────────────────────
+    fun getTtl(): Int {
+        val (_, o) = runAsRoot("cat /proc/sys/net/ipv4/ip_default_ttl")
+        return o.trim().toIntOrNull() ?: -1
+    }
+
+    fun setTtl(ttl: Int): Boolean {
+        val cmds = listOf(
+            "echo $ttl > /proc/sys/net/ipv4/ip_default_ttl",
+            // iptables ile giden paketlerin TTL'ini de sabitle (hotspot tespitini engeller)
+            "iptables -t mangle -D POSTROUTING -j TTL --ttl-set $ttl 2>/dev/null || true",
+            "iptables -t mangle -A POSTROUTING -j TTL --ttl-set $ttl"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
+    fun resetTtl(): Boolean {
+        val cmds = listOf(
+            "echo 64 > /proc/sys/net/ipv4/ip_default_ttl",
+            "iptables -t mangle -D POSTROUTING -j TTL --ttl-set 64 2>/dev/null || true",
+            "iptables -t mangle -F POSTROUTING 2>/dev/null || true"
+        )
+        return cmds.all { runAsRoot(it).first }
+    }
+
     // ── DNS ─────────────────────────────────────────────────────────────────
     fun setDns(dns1: String, dns2: String): Boolean {
         val cmds = listOf(

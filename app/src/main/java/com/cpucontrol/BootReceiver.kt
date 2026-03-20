@@ -30,6 +30,12 @@ class BootReceiver : BroadcastReceiver() {
             RootHelper.setCpuMaxFreq(listOf(RootHelper.PRIME_CORE), primeMax)
             RootHelper.setGpuMinFreq(gpuMin)
             RootHelper.setGpuMaxFreq(gpuMax)
+
+            // TTL fix restore
+            if (p.getBoolean("ttl_fix", false)) {
+                val ttl = p.getInt("ttl_value", 64)
+                RootHelper.setTtl(ttl)
+            }
         }
     }
 }

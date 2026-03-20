@@ -226,6 +226,58 @@ class NetworkFragment : Fragment() {
                 tvDnsStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
             }
         }
+
+        // TTL Fix
+        val switchTtl    = view.findViewById<SwitchMaterial>(R.id.switchTtl)
+        val tvTtlCurrent = view.findViewById<TextView>(R.id.tvTtlCurrent)
+        val tvTtlStatus  = view.findViewById<TextView>(R.id.tvTtlStatus)
+        val btnTtl64     = view.findViewById<MaterialButton>(R.id.btnTtl64)
+        val btnTtl128    = view.findViewById<MaterialButton>(R.id.btnTtl128)
+        val btnTtl255    = view.findViewById<MaterialButton>(R.id.btnTtl255)
+
+        var selectedTtl = prefs.getInt("ttl_value", 64)
+
+        fun updateTtlButtonStates() {
+            val activeColor   = requireContext().getColor(R.color.accent_orange)
+            val inactiveColor = requireContext().getColor(R.color.accent_orange_dim)
+            btnTtl64.backgroundTintList  = android.content.res.ColorStateList.valueOf(if (selectedTtl == 64)  activeColor else inactiveColor)
+            btnTtl128.backgroundTintList = android.content.res.ColorStateList.valueOf(if (selectedTtl == 128) activeColor else inactiveColor)
+            btnTtl255.backgroundTintList = android.content.res.ColorStateList.valueOf(if (selectedTtl == 255) activeColor else inactiveColor)
+        }
+
+        fun loadTtl() {
+            scope.launch {
+                val ttl = withContext(Dispatchers.IO) { RootHelper.getTtl() }
+                tvTtlCurrent.text = "Mevcut TTL: ${if (ttl > 0) ttl else "—"}"
+            }
+        }
+
+        switchTtl.isChecked = prefs.getBoolean("ttl_fix", false)
+        updateTtlButtonStates()
+        loadTtl()
+
+        btnTtl64.setOnClickListener  { selectedTtl = 64;  prefs.edit().putInt("ttl_value", 64).apply();  updateTtlButtonStates() }
+        btnTtl128.setOnClickListener { selectedTtl = 128; prefs.edit().putInt("ttl_value", 128).apply(); updateTtlButtonStates() }
+        btnTtl255.setOnClickListener { selectedTtl = 255; prefs.edit().putInt("ttl_value", 255).apply(); updateTtlButtonStates() }
+
+        switchTtl.setOnCheckedChangeListener { _, checked ->
+            scope.launch {
+                val ok = withContext(Dispatchers.IO) {
+                    if (checked) RootHelper.setTtl(selectedTtl)
+                    else RootHelper.resetTtl()
+                }
+                prefs.edit().putBoolean("ttl_fix", checked && ok).apply()
+                if (ok) {
+                    tvTtlStatus.text = if (checked) "TTL $selectedTtl olarak sabitlendi" else "TTL sıfırlandı (64)"
+                    tvTtlStatus.setTextColor(requireContext().getColor(if (checked) R.color.accent_green else R.color.text_secondary))
+                } else {
+                    tvTtlStatus.text = "Uygulanamadı — root gerekli"
+                    tvTtlStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
+                    switchTtl.isChecked = false
+                }
+                loadTtl()
+            }
+        }
     }
 
     private fun loadCurrentDns(tvCurrentDns: TextView) {
