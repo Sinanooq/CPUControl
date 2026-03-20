@@ -84,19 +84,6 @@
                     android:layout_weight="1"/>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnToggleNotif"
-                    android:text="🔔"
-                    android:textSize="14sp"
-                    android:layout_width="42dp"
-                    android:layout_height="36dp"
-                    android:layout_marginEnd="8dp"
-                    android:textColor="@color/text_secondary"
-                    android:backgroundTint="@color/bg_elevated"
-                    app:cornerRadius="10dp"
-                    app:strokeColor="@color/divider"
-                    app:strokeWidth="1dp"/>
-
-                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnResetCharge"
                     android:text="Sıfırla"
                     android:textSize="11sp"

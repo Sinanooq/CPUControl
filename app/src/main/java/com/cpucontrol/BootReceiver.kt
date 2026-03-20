@@ -3,6 +3,7 @@ package com.cpucontrol
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.SystemClock
 import kotlinx.coroutines.*
 
 class BootReceiver : BroadcastReceiver() {
@@ -10,25 +11,24 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val p = context.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
 
-        // Şarj takıldığında session sıfırla (Battery Guru mantığı)
+        // Şarj takıldığında session sıfırla
         if (intent.action == Intent.ACTION_POWER_CONNECTED) {
             val now = System.currentTimeMillis()
             p.edit()
                 .putLong("session_start_wall",    now)
-                .putLong("session_start_elapsed", android.os.SystemClock.elapsedRealtime())
-                .putLong("session_start_uptime",  android.os.SystemClock.uptimeMillis())
-                .putLong("charge_start_time", now)
+                .putLong("session_start_elapsed", SystemClock.elapsedRealtime())
+                .putLong("session_start_uptime",  SystemClock.uptimeMillis())
                 .apply()
             return
         }
 
-        // Şarjdan çekilince de session sıfırla
+        // Şarjdan çekilince yeni session başlat (özet bildirimi MainActivity'den gönderilir)
         if (intent.action == Intent.ACTION_POWER_DISCONNECTED) {
             val now = System.currentTimeMillis()
             p.edit()
                 .putLong("session_start_wall",    now)
-                .putLong("session_start_elapsed", android.os.SystemClock.elapsedRealtime())
-                .putLong("session_start_uptime",  android.os.SystemClock.uptimeMillis())
+                .putLong("session_start_elapsed", SystemClock.elapsedRealtime())
+                .putLong("session_start_uptime",  SystemClock.uptimeMillis())
                 .apply()
             return
         }
@@ -52,7 +52,7 @@ class BootReceiver : BroadcastReceiver() {
         val gpuMax    = p.getInt("gpu_max",    1400000000)
 
         CoroutineScope(Dispatchers.IO).launch {
-            delay(20000) // wait for system to settle
+            delay(20000)
             RootHelper.setCpuMinFreq(RootHelper.LITTLE_CORES, littleMin)
             RootHelper.setCpuMaxFreq(RootHelper.LITTLE_CORES, littleMax)
             RootHelper.setCpuMinFreq(RootHelper.BIG_CORES, bigMin)
@@ -62,7 +62,6 @@ class BootReceiver : BroadcastReceiver() {
             RootHelper.setGpuMinFreq(gpuMin)
             RootHelper.setGpuMaxFreq(gpuMax)
 
-            // TTL fix restore
             if (p.getBoolean("ttl_fix", false)) {
                 val ttl = p.getInt("ttl_value", 64)
                 RootHelper.setTtl(ttl)

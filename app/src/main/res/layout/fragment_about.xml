@@ -391,40 +391,257 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ── NASIL ÇALIŞIR ── -->
+        <!-- ── NASIL ÇALIŞIR — GENEL ── -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/accent_orange_dim"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="20dp">
+                <TextView android:text="NASIL ÇALIŞIR"
+                    android:textSize="10sp" android:textColor="@color/accent_orange"
+                    android:textStyle="bold" android:letterSpacing="0.12"
+                    android:layout_marginBottom="10dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="Uygulama, root erişimi ile Linux çekirdeğinin sysfs arayüzüne doğrudan yazar. Hiçbir değişiklik kalıcı sistem dosyasına dokunmaz — tüm ayarlar yeniden başlatmada sıfırlanır. Önyükleme alıcısı (BootReceiver) sayesinde cihaz açılışında ayarlar otomatik uygulanır."
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Ana Ekran -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             app:cardBackgroundColor="@color/bg_card"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
             app:strokeColor="@color/divider"
             app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <TextView android:text="NASIL ÇALIŞIR"
-                    android:textSize="10sp" android:textColor="@color/accent_orange"
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="🏠  ANA EKRAN"
+                    android:textSize="10sp" android:textColor="@color/accent_cyan"
                     android:textStyle="bold" android:letterSpacing="0.12"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="8dp"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
                 <TextView
-                    android:text="Root erişimi ile doğrudan Linux çekirdeğinin sysfs arayüzüne yazar. CPU frekansları /sys/devices/system/cpu/ altındaki scaling_min/max_freq dosyaları üzerinden, GPU frekansları Mali devfreq arayüzü ile kontrol edilir.\n\nOyun algılama servisi arka planda çalışarak ön plan uygulamayı izler. Uygulama bazlı profil sistemi, her uygulama için ayrı profil tanımlamaya olanak tanır. Doze modu dumpsys deviceidle ile yönetilir. Bloatware yöneticisi pm disable-user komutu ile uygulamaları siler değil, dondurur — geri alınabilir."
-                    android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
+                    android:text="Cihazın anlık durumunu 2 saniyede bir günceller. CPU sıcaklığı, çekirdek frekansları, GPU frekansı, RAM kullanımı, pil durumu (akım/voltaj/sıcaklık), aktif profil ve ekran süresi özeti tek ekranda görünür. Canlı frekans grafiği son 60 saniyeyi gösterir. Tüm veriler root ile sysfs'ten okunur."
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
                     android:lineSpacingMultiplier="1.5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ── UYARI ── -->
+        <!-- CPU / GPU -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="⚡  CPU / GPU SEKMESİ"
+                    android:textSize="10sp" android:textColor="@color/accent_cyan"
+                    android:textStyle="bold" android:letterSpacing="0.12"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="CPU sekmesi: Her çekirdek grubu için min/maks frekans kaydırıcıları ve governor seçimi sunar. Değer değiştirildiğinde /sys/devices/system/cpu/cpuX/cpufreq/scaling_min_freq ve scaling_max_freq dosyalarına root ile yazılır. Çekirdek online/offline durumu /sys/devices/system/cpu/cpuX/online üzerinden kontrol edilir (cpu0 kapatılamaz).\n\nGPU sekmesi: Mali devfreq arayüzü üzerinden min/maks frekans ayarlanır. GPU yolu cihazdan dinamik olarak bulunur (/sys/devices/platform/soc/…/devfreq/…). Desteklenen frekanslar available_frequencies dosyasından okunur."
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Oyun -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="🎮  OYUN SEKMESİ"
+                    android:textSize="10sp" android:textColor="@color/accent_green"
+                    android:textStyle="bold" android:letterSpacing="0.12"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="Oyun listesine eklenen uygulamalar, GameDetectorService tarafından arka planda izlenir. Servis her 2 saniyede bir ön plan uygulamayı kontrol eder (dumpsys activity). Oyun ön plana geçince otomatik olarak Oyun profili uygulanır, çıkınca önceki profile geri dönülür.\n\nOyun listesi SharedPreferences'ta saklanır. Listeye yüklü uygulamalar arasından seçim yapılır, sistem uygulamaları filtrelenir."
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Araçlar -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="🛠  ARAÇLAR SEKMESİ"
+                    android:textSize="10sp" android:textColor="@color/accent_purple"
+                    android:textStyle="bold" android:letterSpacing="0.12"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="Ekran Süresi: UsageStatsManager API ile şarj takıldığı andan itibaren ekran açık/kapalı süresi, deep sleep (elapsedRealtime − uptimeMillis farkı) ve uygulama kullanım süreleri hesaplanır. Şarjdan çekilince özet bildirimi gönderilir.\n\nDoze: dumpsys deviceidle force-idle komutu ile zorla derin uyku moduna alır. İstisnalar deviceidle whitelist ile yönetilir.\n\nBloatware: pm disable-user --user 0 ile uygulamayı dondurur, pm enable ile geri açar. Hiçbir uygulama silinmez.\n\nAğ: TCP congestion control /proc/sys/net/ipv4/tcp_congestion_control üzerinden değiştirilir. TTL fix /proc/sys/net/ipv4/ip_default_ttl ve IPv6 karşılığına yazılır.\n\nSes: Android AudioManager + LoudnessEnhancer API ile yazılım seviyesinde amplifikasyon uygulanır. Magisk modülü ile sistem ses politikası dosyası değiştirilebilir."
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Daha Fazla -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="⋯  DAHA FAZLA SEKMESİ"
+                    android:textSize="10sp" android:textColor="@color/accent_yellow"
+                    android:textStyle="bold" android:letterSpacing="0.12"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="Profil: 5 hazır profil (Dengeli / Performans / Oyun / Pil Tasarrufu / Gece) CPU+GPU frekanslarını ve governor'ı tek seferde uygular. Otomatik profil servisi pil seviyesini izleyerek geçiş yapar. Uygulama bazlı profil, her uygulama için ayrı profil tanımlar.\n\nPil: Şarj limiti /sys/class/power_supply/battery/charge_control_limit üzerinden ayarlanır. Gece şarj planı AlarmManager ile belirli saatte devreye girer.\n\nRAM: Bellek bilgisi ActivityManager.MemoryInfo ile okunur. Önbellek temizleme root ile yapılır.\n\nOverlay: SYSTEM_ALERT_WINDOW izni ile ekran üstü CPU/GPU/sıcaklık göstergesi çizer."
+                    android:textSize="12sp" android:textColor="@color/text_secondary"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── UYARILAR ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/accent_orange_dim"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/accent_orange"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="⚠  GENEL UYARI"
+                    android:textSize="11sp" android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="Bu uygulama root erişimi gerektirir. Tüm değişiklikler yeniden başlatmada sıfırlanır. Kullanım sorumluluğu tamamen kullanıcıya aittir."
+                    android:textSize="12sp" android:textColor="@color/accent_orange"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- CPU/GPU uyarısı -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/accent_orange_dim"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/accent_orange"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="⚡  CPU / GPU UYARISI"
+                    android:textSize="11sp" android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="• Maksimum frekansı çok düşük ayarlamak cihazı yavaşlatır, bazı uygulamalar çöpebilir.\n• Minimum frekansı maksimumun üstüne çıkarmayın — sistem kararsızlaşır.\n• cpu0 hiçbir zaman kapatılamaz, diğer çekirdekleri kapatmak performansı ciddi düşürür.\n• GPU frekansını çok düşük ayarlamak ekran donmalarına yol açabilir."
+                    android:textSize="12sp" android:textColor="@color/accent_orange"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Bloatware uyarısı -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/accent_orange_dim"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/accent_orange"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="🛠  BLOATWARE UYARISI"
+                    android:textSize="11sp" android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="• Dondurma işlemi geri alınabilir (pm enable), silme değildir.\n• Kırmızı (Tehlikeli) işaretli uygulamaları dondurmak sistemi bozabilir, bootloop'a girebilirsiniz.\n• Sarı (Dikkatli) uygulamaları dondurmadan önce ne işe yaradığını araştırın.\n• Emin olmadığınız hiçbir uygulamaya dokunmayın."
+                    android:textSize="12sp" android:textColor="@color/accent_orange"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Doze uyarısı -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:cardBackgroundColor="@color/accent_orange_dim"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/accent_orange"
+            app:strokeWidth="1dp">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="😴  DOZE UYARISI"
+                    android:textSize="11sp" android:textStyle="bold"
+                    android:textColor="@color/accent_orange"
+                    android:layout_marginBottom="8dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView
+                    android:text="• Zorla Doze aktifken bildirimler gecikebilir veya hiç gelmeyebilir.\n• WhatsApp, Telegram gibi kritik uygulamaları istisna listesine ekleyin.\n• Doze, ekran açıkken otomatik devre dışı kalır — manuel kapatmanıza gerek yoktur."
+                    android:textSize="12sp" android:textColor="@color/accent_orange"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Pil uyarısı -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -433,26 +650,18 @@
             app:cardElevation="0dp"
             app:strokeColor="@color/accent_orange"
             app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView android:text="⚠  UYARI"
-                    android:textSize="12sp" android:textStyle="bold"
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="18dp">
+                <TextView android:text="🔋  PİL UYARISI"
+                    android:textSize="11sp" android:textStyle="bold"
                     android:textColor="@color/accent_orange"
                     android:layout_marginBottom="8dp"
                     android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-
                 <TextView
-                    android:text="Bu uygulama root erişimi gerektirir. Yanlış frekans ayarları cihazın kararsız çalışmasına neden olabilir. Bloatware dondurma işlemleri geri alınabilir olsa da kritik sistem uygulamalarına dikkat edin. Kullanım sorumluluğu kullanıcıya aittir."
-                    android:textSize="12sp"
-                    android:textColor="@color/accent_orange"
-                    android:lineSpacingMultiplier="1.4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:text="• Şarj limiti tüm cihazlarda desteklenmeyebilir — çalışmıyorsa donanım desteklemiyor demektir.\n• Ses amplifikasyonu %150 üzerinde hoparlör hasarına yol açabilir, dikkatli kullanın.\n• TTL fix operatörün tespit sistemini atlatmaya çalışır; operatör politikasına aykırı olabilir."
+                    android:textSize="12sp" android:textColor="@color/accent_orange"
+                    android:lineSpacingMultiplier="1.5"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 

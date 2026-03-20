@@ -3,8 +3,6 @@ package com.cpucontrol
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.usage.UsageEvents
-import android.app.usage.UsageStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -12,9 +10,8 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
-import android.os.SystemClock
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.NotificationCompat
@@ -31,7 +28,14 @@ class MainActivity : AppCompatActivity() {
 
     private val notifPermLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { /* izin verildi/reddedildi, sessizce devam et */ }
+    ) { granted ->
+        if (granted) {
+            // İzin verildi, bildirim servisini başlat
+            getSharedPreferences("cpu_prefs", MODE_PRIVATE)
+                .edit().putBoolean("screen_time_notif", true).apply()
+            startForegroundService(Intent(this, ScreenTimeNotificationService::class.java))
+        }
+    }
 
     private fun requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -46,27 +50,12 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
                 Intent.ACTION_POWER_CONNECTED -> {
-                    val now = System.currentTimeMillis()
-                    getSharedPreferences("cpu_prefs", MODE_PRIVATE).edit()
-                        .putLong("session_start_wall",    now)
-                        .putLong("session_start_elapsed", SystemClock.elapsedRealtime())
-                        .putLong("session_start_uptime",  SystemClock.uptimeMillis())
-                        .putLong("charge_start_time", now)
-                        .putLong("snap_elapsed", SystemClock.elapsedRealtime())
-                        .putLong("snap_uptime",  SystemClock.uptimeMillis())
-                        .apply()
+                    // Session BootReceiver'da kaydediliyor, burada sadece bildirim
                     sendChargeNotification(charging = true)
                 }
                 Intent.ACTION_POWER_DISCONNECTED -> {
-                    // Önce özet bildirimi gönder (eski session verileriyle)
+                    // Özet bildirimi gönder (BootReceiver session'ı sıfırlamadan önce)
                     sendChargeSummaryNotification()
-                    // Sonra yeni session başlat
-                    val now = System.currentTimeMillis()
-                    getSharedPreferences("cpu_prefs", MODE_PRIVATE).edit()
-                        .putLong("session_start_wall",    now)
-                        .putLong("session_start_elapsed", SystemClock.elapsedRealtime())
-                        .putLong("session_start_uptime",  SystemClock.uptimeMillis())
-                        .apply()
                 }
             }
         }
@@ -75,53 +64,8 @@ class MainActivity : AppCompatActivity() {
     /** Şarjdan çekilince: şarj süresindeki ekran açık/kapalı/uyanık/deep sleep özetini bildirir */
     private fun sendChargeSummaryNotification() {
         scope.launch {
-            val result = withContext(Dispatchers.IO) {
-                val now = System.currentTimeMillis()
-                val p   = getSharedPreferences("cpu_prefs", MODE_PRIVATE)
-                val sessionStartWall    = p.getLong("session_start_wall",    0L)
-                val sessionStartElapsed = p.getLong("session_start_elapsed", 0L)
-                val sessionStartUptime  = p.getLong("session_start_uptime",  0L)
-
-                val periodStart = if (sessionStartWall > 0L && sessionStartWall < now)
-                    sessionStartWall else now - 3_600_000L
-
-                val sessionElapsedMs = if (sessionStartElapsed > 0L)
-                    SystemClock.elapsedRealtime() - sessionStartElapsed else 0L
-
-                val deepSleepMs = if (sessionStartElapsed > 0L && sessionStartUptime > 0L) {
-                    val ed = SystemClock.elapsedRealtime() - sessionStartElapsed
-                    val ud = SystemClock.uptimeMillis()    - sessionStartUptime
-                    (ed - ud).coerceAtLeast(0L)
-                } else 0L
-
-                val usm    = getSystemService(UsageStatsManager::class.java)
-                val events = usm.queryEvents(periodStart, now)
-                var screenOnMs  = 0L
-                var screenOffMs = 0L
-                var lastOnTime  = -1L
-                var lastOffTime = -1L
-                var firstSeen   = false
-                val event       = UsageEvents.Event()
-                while (events.hasNextEvent()) {
-                    events.getNextEvent(event)
-                    when (event.eventType) {
-                        UsageEvents.Event.SCREEN_INTERACTIVE -> {
-                            if (!firstSeen) { lastOffTime = periodStart; firstSeen = true }
-                            if (lastOffTime >= 0L) { screenOffMs += event.timeStamp - lastOffTime; lastOffTime = -1L }
-                            lastOnTime = event.timeStamp
-                        }
-                        UsageEvents.Event.SCREEN_NON_INTERACTIVE -> {
-                            if (!firstSeen) { lastOnTime = periodStart; firstSeen = true }
-                            if (lastOnTime >= 0L) { screenOnMs += event.timeStamp - lastOnTime; lastOnTime = -1L }
-                            lastOffTime = event.timeStamp
-                        }
-                    }
-                }
-                if (lastOnTime >= 0L) screenOnMs += now - lastOnTime
-                if (lastOffTime >= 0L && lastOnTime < 0L) screenOffMs += now - lastOffTime
-
-                val awakeMs = (sessionElapsedMs - deepSleepMs).coerceAtLeast(0L)
-                longArrayOf(sessionElapsedMs, screenOnMs, screenOffMs, awakeMs, deepSleepMs)
+            val data = withContext(Dispatchers.IO) {
+                ScreenTimeFragment.collectData(applicationContext)
             }
 
             fun fmt(ms: Long): String {
@@ -146,15 +90,15 @@ class MainActivity : AppCompatActivity() {
                 PendingIntent.FLAG_IMMUTABLE
             )
             val bigText = buildString {
-                appendLine("📱 Ekran Açık:   ${fmt(result[1])}")
-                appendLine("🌙 Ekran Kapalı: ${fmt(result[2])}")
-                appendLine("👁 Uyanık:       ${fmt(result[3])}")
-                appendLine("💤 Deep Sleep:   ${fmt(result[4])}")
-                append("⏱ Toplam:        ${fmt(result[0])}")
+                appendLine("📱 Ekran Açık:   ${fmt(data.screenOnMs)}")
+                appendLine("🌙 Ekran Kapalı: ${fmt(data.screenOffMs)}")
+                appendLine("👁 Uyanık:       ${fmt(data.awakeMs)}")
+                appendLine("💤 Deep Sleep:   ${fmt(data.deepSleepMs)}")
+                append("⏱ Toplam:        ${fmt(data.sessionElapsedMs)}")
             }
             val notif = NotificationCompat.Builder(this@MainActivity, channelId)
                 .setContentTitle("🔌 Şarjdan Çekildi  •  Pil: $bat%")
-                .setContentText("📱 ${fmt(result[1])}  🌙 ${fmt(result[2])}  💤 ${fmt(result[4])}")
+                .setContentText("📱 ${fmt(data.screenOnMs)}  🌙 ${fmt(data.screenOffMs)}  💤 ${fmt(data.deepSleepMs)}")
                 .setStyle(NotificationCompat.BigTextStyle().bigText(bigText))
                 .setSmallIcon(android.R.drawable.ic_lock_idle_low_battery)
                 .setContentIntent(pi)
