@@ -7,7 +7,40 @@ object RootHelper {
     val BIG_CORES    = listOf(4, 5, 6)       // Cortex-A715  maks 3.2 GHz
     val PRIME_CORE   = 7                     // Cortex-A715  maks 3.35 GHz
 
-    val GPU_PATH = "/sys/devices/platform/soc/13000000.mali/devfreq/13000000.mali"
+    // GPU path'i dinamik olarak bul
+    fun findGpuPath(): String {
+        val candidates = listOf(
+            "/sys/devices/platform/soc/13000000.mali/devfreq/13000000.mali",
+            "/sys/devices/platform/13000000.mali/devfreq/13000000.mali",
+            "/sys/class/devfreq/13000000.mali",
+            "/sys/devices/platform/soc/mali/devfreq/mali",
+            "/sys/class/devfreq/mali"
+        )
+        for (path in candidates) {
+            val (ok, _) = runAsRoot("test -d $path")
+            if (ok) return path
+        }
+        // Genel arama
+        val (_, out) = runAsRoot("find /sys/class/devfreq -maxdepth 1 -name '*mali*' 2>/dev/null | head -1")
+        val found = out.trim()
+        if (found.isNotEmpty()) return found
+        val (_, out2) = runAsRoot("find /sys/devices -name 'max_freq' -path '*mali*' 2>/dev/null | head -1")
+        return out2.trim().removeSuffix("/max_freq").ifEmpty { candidates[0] }
+    }
+
+    fun getGpuPathCached(): String {
+        if (_gpuPathCache.isEmpty()) _gpuPathCache = findGpuPath()
+        return _gpuPathCache
+    }
+    private var _gpuPathCache = ""
+
+    // Cihazdan desteklenen GPU frekanslarını oku
+    fun readGpuFreqsFromDevice(): List<Int> {
+        val path = getGpuPathCached()
+        val (_, out) = runAsRoot("cat $path/available_frequencies 2>/dev/null || cat $path/trans_stat 2>/dev/null | head -1")
+        val parsed = out.trim().split(Regex("\\s+")).mapNotNull { it.toIntOrNull() }.filter { it > 0 }.sorted()
+        return parsed.ifEmpty { GPU_FREQS }
+    }
 
     // ── Frekans tabloları ───────────────────────────────────────────────────
     val LITTLE_FREQS = listOf(
@@ -118,11 +151,29 @@ object RootHelper {
     }
 
     // ── GPU ─────────────────────────────────────────────────────────────────
-    fun setGpuMaxFreq(freqHz: Int): Boolean = runAsRoot("echo $freqHz > $GPU_PATH/max_freq").first
-    fun setGpuMinFreq(freqHz: Int): Boolean = runAsRoot("echo $freqHz > $GPU_PATH/min_freq").first
-    fun getGpuMaxFreq(): Int { val (_, o) = runAsRoot("cat $GPU_PATH/max_freq"); return o.trim().toIntOrNull() ?: -1 }
-    fun getGpuMinFreq(): Int { val (_, o) = runAsRoot("cat $GPU_PATH/min_freq"); return o.trim().toIntOrNull() ?: -1 }
-    fun getGpuCurFreq(): Long { val (_, o) = runAsRoot("cat $GPU_PATH/cur_freq"); return o.trim().toLongOrNull() ?: -1L }
+    fun setGpuMaxFreq(freqHz: Int): Boolean {
+        val path = getGpuPathCached()
+        return runAsRoot("echo $freqHz > $path/max_freq").first
+    }
+    fun setGpuMinFreq(freqHz: Int): Boolean {
+        val path = getGpuPathCached()
+        return runAsRoot("echo $freqHz > $path/min_freq").first
+    }
+    fun getGpuMaxFreq(): Int {
+        val path = getGpuPathCached()
+        val (_, o) = runAsRoot("cat $path/max_freq")
+        return o.trim().toIntOrNull() ?: -1
+    }
+    fun getGpuMinFreq(): Int {
+        val path = getGpuPathCached()
+        val (_, o) = runAsRoot("cat $path/min_freq")
+        return o.trim().toIntOrNull() ?: -1
+    }
+    fun getGpuCurFreq(): Long {
+        val path = getGpuPathCached()
+        val (_, o) = runAsRoot("cat $path/cur_freq")
+        return o.trim().toLongOrNull() ?: -1L
+    }
 
     // ── Pil ─────────────────────────────────────────────────────────────────
     fun getChargeLimit(): Int {

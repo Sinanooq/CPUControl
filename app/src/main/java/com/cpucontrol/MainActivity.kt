@@ -1,5 +1,6 @@
 package com.cpucontrol
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     private val fragments = listOf(
         { HomeFragment()    as Fragment },
-        { AllCpuFragment()  as Fragment },
+        { CpuGpuFragment()  as Fragment },
         { GameFragment()    as Fragment },
         { ToolsFragment()   as Fragment },
         { MoreFragment()    as Fragment }
@@ -53,7 +54,10 @@ class MainActivity : AppCompatActivity() {
                     if (newDark) AppCompatDelegate.MODE_NIGHT_YES
                     else AppCompatDelegate.MODE_NIGHT_NO
                 )
-                recreate()
+                val intent = Intent(this, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                finish()
             }
         }
 

@@ -8,9 +8,16 @@ import kotlinx.coroutines.*
 class BootReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        val p = context.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
+
+        // Şarj takıldığında ekran süresi sıfırlama noktasını kaydet
+        if (intent.action == Intent.ACTION_POWER_CONNECTED) {
+            p.edit().putLong("charge_start_time", System.currentTimeMillis()).apply()
+            return
+        }
+
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) return
 
-        val p = context.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
         val littleMin = p.getInt("little_min", 169000)
         val littleMax = p.getInt("little_max", 2200000)
         val bigMin    = p.getInt("big_min",    300000)

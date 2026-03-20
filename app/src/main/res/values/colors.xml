@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Dark tema (varsayılan) -->
-    <color name="bg_primary">#08090E</color>
-    <color name="bg_surface">#0F1117</color>
-    <color name="bg_card">#13161F</color>
-    <color name="bg_card2">#1A1E2A</color>
-    <color name="bg_elevated">#1F2333</color>
-    <color name="text_primary">#F0F2FF</color>
+    <!-- Light tema (varsayılan — values-night override eder) -->
+    <color name="bg_primary">#F4F6FB</color>
+    <color name="bg_surface">#ECEEF5</color>
+    <color name="bg_card">#FFFFFF</color>
+    <color name="bg_card2">#F0F2F8</color>
+    <color name="bg_elevated">#E8EAF2</color>
+    <color name="text_primary">#0D0F1A</color>
     <color name="text_secondary">#6B7280</color>
-    <color name="text_hint">#3D4251</color>
-    <color name="divider">#1E2235</color>
-    <color name="on_primary">#08090E</color>
-
-    <!-- Accent — canlı neon tonları -->
-    <color name="accent_cyan">#00D4FF</color>
-    <color name="accent_cyan_dim">#0A2A35</color>
-    <color name="accent_green">#00E676</color>
-    <color name="accent_green_dim">#0A2A1A</color>
-    <color name="accent_orange">#FF6B35</color>
-    <color name="accent_orange_dim">#2A1A0A</color>
-    <color name="accent_purple">#A78BFA</color>
-    <color name="accent_purple_dim">#1A1030</color>
-    <color name="accent_yellow">#FFD60A</color>
-    <color name="accent_yellow_dim">#2A2200</color>
-    <color name="accent_pink">#FF4D8D</color>
-    <color name="accent_pink_dim">#2A0A1A</color>
-
-    <bool name="is_light_theme">false</bool>
+    <color name="text_hint">#B0B8CC</color>
+    <color name="divider">#E2E5EF</color>
+    <color name="on_primary">#FFFFFF</color>
+    <color name="accent_cyan">#0099CC</color>
+    <color name="accent_cyan_dim">#E0F4FF</color>
+    <color name="accent_green">#00A854</color>
+    <color name="accent_green_dim">#E0FFF0</color>
+    <color name="accent_orange">#E05A20</color>
+    <color name="accent_orange_dim">#FFF0E8</color>
+    <color name="accent_purple">#7C5CDB</color>
+    <color name="accent_purple_dim">#F0ECFF</color>
+    <color name="accent_yellow">#CC9900</color>
+    <color name="accent_yellow_dim">#FFFBE0</color>
+    <color name="accent_pink">#CC2266</color>
+    <color name="accent_pink_dim">#FFE8F2</color>
+    <bool name="is_light_theme">true</bool>
 </resources>

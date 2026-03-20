@@ -15,7 +15,7 @@ import kotlinx.coroutines.*
 class GpuFragment : Fragment() {
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private val freqs = RootHelper.GPU_FREQS
+    private var freqs = RootHelper.GPU_FREQS  // başlangıçta sabit liste, sonra cihazdan güncellenir
     private var autoRefreshJob: Job? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
@@ -45,7 +45,21 @@ class GpuFragment : Fragment() {
         tvMinSel.text = "${freqs[minIdx] / 1000000} MHz"
         tvMaxSel.text = "${freqs[maxIdx] / 1000000} MHz"
 
-        seekMin.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        // Cihazdan gerçek GPU frekanslarını yükle
+        scope.launch {
+            val deviceFreqs = withContext(Dispatchers.IO) { RootHelper.readGpuFreqsFromDevice() }
+            if (deviceFreqs != freqs) {
+                freqs = deviceFreqs
+                seekMin.max = freqs.size - 1
+                seekMax.max = freqs.size - 1
+                val newMinIdx = freqs.indexOfFirst { it >= savedMin }.coerceAtLeast(0)
+                val newMaxIdx = freqs.indexOfLast { it <= savedMax }.let { if (it < 0) freqs.size - 1 else it }
+                seekMin.progress = newMinIdx
+                seekMax.progress = newMaxIdx
+                tvMinSel.text = "${freqs[newMinIdx] / 1000000} MHz"
+                tvMaxSel.text = "${freqs[newMaxIdx] / 1000000} MHz"
+            }
+        }(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(sb: SeekBar, p: Int, fromUser: Boolean) {
                 tvMinSel.text = "${freqs[p] / 1000000} MHz"
             }
@@ -71,6 +85,7 @@ class GpuFragment : Fragment() {
             btnApply.isEnabled = false
             tvStatus.text = "Uygulanıyor..."
             scope.launch {
+                val gpuPath = withContext(Dispatchers.IO) { RootHelper.getGpuPathCached() }
                 val ok = withContext(Dispatchers.IO) {
                     RootHelper.setGpuMinFreq(minFreq) && RootHelper.setGpuMaxFreq(maxFreq)
                 }
@@ -80,7 +95,7 @@ class GpuFragment : Fragment() {
                     tvStatus.text = "Kaydedildi  ·  ${minFreq / 1000000} – ${maxFreq / 1000000} MHz"
                     tvStatus.setTextColor(requireContext().getColor(R.color.accent_green))
                 } else {
-                    tvStatus.text = "Uygulama başarısız"
+                    tvStatus.text = "Başarısız — path: $gpuPath"
                     tvStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
                 }
                 refreshCurrent(tvCurMin, tvCurMax, tvCurMaxSmall)

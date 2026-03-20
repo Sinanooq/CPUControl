@@ -301,7 +301,30 @@
                     android:textSize="11sp"
                     android:textColor="@color/accent_green"
                     android:layout_marginTop="10dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnListMixer"
+                    android:text="Mixer Kontrollerini Listele"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="8dp"
+                    app:cornerRadius="12dp"
+                    android:backgroundTint="@color/bg_elevated"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    app:strokeColor="@color/divider"
+                    app:strokeWidth="1dp"/>
+
+                <TextView
+                    android:id="@+id/tvMixerList"
+                    android:text=""
+                    android:textSize="10sp"
+                    android:textColor="@color/text_secondary"
+                    android:fontFamily="monospace"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
