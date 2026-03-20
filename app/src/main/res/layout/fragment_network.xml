@@ -40,10 +40,10 @@
 
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
                         android:layout_weight="1" android:orientation="vertical">
-                        <TextView android:text="NAT Tethering" android:textSize="15sp"
+                        <TextView android:text="WiFi Direct Paylaşımı" android:textSize="15sp"
                             android:textStyle="bold" android:textColor="@color/text_primary"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        <TextView android:text="Bağlanan cihazlar VPN kurmadan internet alır"
+                        <TextView android:text="WiFi bağlantısını kesmeden P2P üzerinden internet paylaş"
                             android:textSize="12sp" android:textColor="@color/text_secondary"
                             android:layout_width="wrap_content" android:layout_height="wrap_content"
                             android:layout_marginTop="3dp"/>

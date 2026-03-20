@@ -1,5 +1,6 @@
 package com.cpucontrol
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,37 +26,42 @@ class NetworkFragment : Fragment() {
         val tvTetheringInfo  = view.findViewById<TextView>(R.id.tvTetheringInfo)
         val tvTetheringStatus = view.findViewById<TextView>(R.id.tvTetheringStatus)
 
-        scope.launch {
-            val active = withContext(Dispatchers.IO) { RootHelper.isTetheringActive() }
-            switchTethering.isChecked = active
-            if (active) {
-                val upstream = withContext(Dispatchers.IO) { RootHelper.getUpstreamInterface() }
-                val hotspot  = withContext(Dispatchers.IO) { RootHelper.getHotspotInterface() }
-                tvTetheringInfo.text = "upstream: $upstream  •  hotspot: $hotspot"
-            }
+        // Mevcut durumu yansıt
+        switchTethering.isChecked = WifiShareService.isRunning
+        if (WifiShareService.isRunning) {
+            tvTetheringInfo.text = "SSID: ${WifiShareService.groupSsid}  •  Şifre: ${WifiShareService.groupPass}"
+            tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik internet alır"
+            tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
         }
 
         switchTethering.setOnCheckedChangeListener { _, checked ->
-            scope.launch {
-                tvTetheringStatus.text = if (checked) "Başlatılıyor..." else "Durduruluyor..."
+            val ctx = requireContext()
+            if (checked) {
+                ctx.startForegroundService(
+                    Intent(ctx, WifiShareService::class.java).setAction(WifiShareService.ACTION_START)
+                )
+                tvTetheringStatus.text = "Başlatılıyor..."
                 tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
-                if (checked) {
-                    val (ok, info) = withContext(Dispatchers.IO) { RootHelper.startTethering() }
-                    if (ok) {
-                        tvTetheringInfo.text = info
-                        tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik IP alır"
+                // 3 sn sonra bilgileri göster
+                scope.launch {
+                    delay(3000)
+                    if (WifiShareService.isRunning) {
+                        tvTetheringInfo.text = "SSID: ${WifiShareService.groupSsid}  •  Şifre: ${WifiShareService.groupPass}"
+                        tvTetheringStatus.text = "Aktif — bağlanan cihazlar otomatik internet alır"
                         tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_green))
                     } else {
                         switchTethering.isChecked = false
-                        tvTetheringStatus.text = "Başlatılamadı — hotspot açık mı?"
+                        tvTetheringStatus.text = "Başlatılamadı"
                         tvTetheringStatus.setTextColor(requireContext().getColor(R.color.accent_orange))
                     }
-                } else {
-                    withContext(Dispatchers.IO) { RootHelper.stopTethering() }
-                    tvTetheringInfo.text = ""
-                    tvTetheringStatus.text = "Durduruldu"
-                    tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
                 }
+            } else {
+                ctx.startService(
+                    Intent(ctx, WifiShareService::class.java).setAction(WifiShareService.ACTION_STOP)
+                )
+                tvTetheringInfo.text = ""
+                tvTetheringStatus.text = "Durduruldu"
+                tvTetheringStatus.setTextColor(requireContext().getColor(R.color.text_secondary))
             }
         }
 
