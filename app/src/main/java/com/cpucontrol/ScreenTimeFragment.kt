@@ -130,43 +130,66 @@ class ScreenTimeFragment : Fragment() {
             periodStart    = now - TimeUnit.HOURS.toMillis(24)
             isChargePeriod = false
         }
-        val periodMs = now - periodStart
 
-        // Ekran açık/kapalı süresi
+        // Ekran açık/kapalı süresi + uygulama süreleri — hepsi event'lerden hesapla
         val usm = ctx.getSystemService(UsageStatsManager::class.java)
         val events = usm.queryEvents(periodStart, now)
-        var screenOnMs  = 0L
-        var lastOnTime  = 0L
+        var screenOnMs   = 0L
+        var screenOffMs  = 0L
+        var lastOnTime   = 0L
+        var lastOffTime  = periodStart  // period başında ekran kapalı varsay
+        val appFgStart   = mutableMapOf<String, Long>()
+        val appFgTotal   = mutableMapOf<String, Long>()
         val event = android.app.usage.UsageEvents.Event()
 
         while (events.hasNextEvent()) {
             events.getNextEvent(event)
             when (event.eventType) {
-                android.app.usage.UsageEvents.Event.SCREEN_INTERACTIVE -> lastOnTime = event.timeStamp
+                // Ekran açıldı
+                android.app.usage.UsageEvents.Event.SCREEN_INTERACTIVE -> {
+                    if (lastOffTime > 0) {
+                        screenOffMs += event.timeStamp - lastOffTime
+                        lastOffTime = 0
+                    }
+                    lastOnTime = event.timeStamp
+                }
+                // Ekran kapandı
                 android.app.usage.UsageEvents.Event.SCREEN_NON_INTERACTIVE -> {
                     if (lastOnTime > 0) {
                         screenOnMs += event.timeStamp - lastOnTime
                         lastOnTime = 0
                     }
+                    lastOffTime = event.timeStamp
+                }
+                // Uygulama ön plana geçti
+                android.app.usage.UsageEvents.Event.MOVE_TO_FOREGROUND -> {
+                    appFgStart[event.packageName] = event.timeStamp
+                }
+                // Uygulama arka plana geçti
+                android.app.usage.UsageEvents.Event.MOVE_TO_BACKGROUND -> {
+                    val start = appFgStart.remove(event.packageName) ?: continue
+                    appFgTotal[event.packageName] =
+                        (appFgTotal[event.packageName] ?: 0L) + (event.timeStamp - start)
                 }
             }
         }
+        // Hâlâ açık olan ekran/uygulamalar için now'a kadar say
         if (lastOnTime > 0) screenOnMs += now - lastOnTime
+        if (lastOffTime > 0 && lastOnTime == 0L) screenOffMs += now - lastOffTime
+        appFgStart.forEach { (pkg, start) ->
+            appFgTotal[pkg] = (appFgTotal[pkg] ?: 0L) + (now - start)
+        }
 
-        val screenOffMs = (periodMs - screenOnMs).coerceAtLeast(0)
-
-        // Uygulama kullanım süreleri
-        val stats = usm.queryUsageStats(UsageStatsManager.INTERVAL_BEST, periodStart, now)
         val pm2 = ctx.packageManager
-        val appUsages = stats
-            .filter { it.totalTimeInForeground > 0 }
-            .sortedByDescending { it.totalTimeInForeground }
-            .map { stat ->
+        val appUsages = appFgTotal
+            .filter { it.value > 0 }
+            .map { (pkg, ms) ->
                 val label = try {
-                    pm2.getApplicationLabel(pm2.getApplicationInfo(stat.packageName, 0)).toString()
-                } catch (_: Exception) { stat.packageName }
-                AppUsage(label, stat.totalTimeInForeground)
+                    pm2.getApplicationLabel(pm2.getApplicationInfo(pkg, 0)).toString()
+                } catch (_: Exception) { pkg }
+                AppUsage(label, ms)
             }
+            .sortedByDescending { it.timeMs }
 
         return ScreenData(
             uptimeMs       = uptimeMs,
