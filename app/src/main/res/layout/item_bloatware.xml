@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginBottom="5dp"
+    app:cardBackgroundColor="@color/bg_card"
+    app:cardCornerRadius="14dp"
+    app:strokeColor="@color/divider"
+    app:strokeWidth="1dp"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="10dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp">
+
+        <!-- İkon -->
+        <ImageView
+            android:id="@+id/ivBloatIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:scaleType="fitCenter"/>
+
+        <!-- İsim + paket -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="8dp">
+
+            <TextView
+                android:id="@+id/tvBloatName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/text_primary"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/tvBloatPkg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="9sp"
+                android:textColor="@color/text_hint"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginTop="1dp"/>
+
+            <!-- Durum badge -->
+            <TextView
+                android:id="@+id/tvBloatStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="9sp"
+                android:textStyle="bold"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginTop="4dp"
+                android:text="AKTİF"/>
+        </LinearLayout>
+
+        <!-- Aksiyon butonu -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBloatAction"
+            android:text="Dondur"
+            android:layout_width="80dp"
+            android:layout_height="34dp"
+            app:cornerRadius="10dp"
+            android:textSize="11sp"/>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_primary">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
+
+            <!-- Doze Durum Kartı -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:text="😴  DOZE MODU"
+                                android:textSize="13sp"
+                                android:textColor="@color/accent_cyan"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.06"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+
+                            <TextView
+                                android:text="Ekran kapalıyken derin uyku — pil tasarrufu"
+                                android:textSize="10sp"
+                                android:textColor="@color/text_hint"
+                                android:layout_marginTop="3dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"/>
+                        </LinearLayout>
+
+                        <!-- Durum badge -->
+                        <TextView
+                            android:id="@+id/tvDozeState"
+                            android:text="KAPALI"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_secondary"
+                            android:textStyle="bold"
+                            android:background="@color/bg_elevated"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:paddingTop="6dp"
+                            android:paddingBottom="6dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnDozeEnable"
+                            android:text="Zorla Aktif Et"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            app:cornerRadius="12dp"
+                            android:backgroundTint="@color/accent_cyan"
+                            android:textColor="@color/on_primary"
+                            android:textSize="13sp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnDozeDisable"
+                            android:text="Devre Dışı"
+                            android:layout_width="0dp"
+                            android:layout_height="44dp"
+                            android:layout_weight="1"
+                            app:cornerRadius="12dp"
+                            android:backgroundTint="@color/bg_elevated"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="13sp"
+                            app:strokeColor="@color/divider"
+                            app:strokeWidth="1dp"/>
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvDozeStatus"
+                        android:text=""
+                        android:textSize="11sp"
+                        android:textColor="@color/accent_green"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- İstisna Ekle -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="@color/accent_green_dim"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:text="✅  İSTİSNALAR"
+                        android:textSize="13sp"
+                        android:textColor="@color/accent_green"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.06"
+                        android:layout_marginBottom="4dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:text="Bu uygulamalar Doze'dan etkilenmez, bildirimler gelmeye devam eder"
+                        android:textSize="10sp"
+                        android:textColor="@color/text_hint"
+                        android:layout_marginBottom="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <!-- Hızlı ekle butonları -->
+                    <TextView
+                        android:text="Hızlı ekle:"
+                        android:textSize="10sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_marginBottom="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAddWhatsapp"
+                            android:text="WhatsApp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="8dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/bg_elevated"
+                            android:textColor="@color/accent_green"
+                            android:textSize="12sp"
+                            app:strokeColor="@color/accent_green_dim"
+                            app:strokeWidth="1dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAddTelegram"
+                            android:text="Telegram"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginEnd="8dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/bg_elevated"
+                            android:textColor="@color/accent_cyan"
+                            android:textSize="12sp"
+                            app:strokeColor="@color/accent_cyan_dim"
+                            app:strokeWidth="1dp"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAddPhone"
+                            android:text="Telefon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            app:cornerRadius="10dp"
+                            android:backgroundTint="@color/bg_elevated"
+                            android:textColor="@color/accent_yellow"
+                            android:textSize="12sp"
+                            app:strokeColor="@color/accent_yellow_dim"
+                            app:strokeWidth="1dp"/>
+                    </LinearLayout>
+
+                    <!-- Manuel paket adı girişi -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            app:cardBackgroundColor="@color/bg_elevated"
+                            app:cardCornerRadius="12dp"
+                            app:strokeColor="@color/divider"
+                            app:strokeWidth="1dp"
+                            app:cardElevation="0dp">
+
+                            <EditText
+                                android:id="@+id/etPackageName"
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:hint="paket.adı (örn: com.whatsapp)"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp"
+                                android:background="@null"
+                                android:textColor="@color/text_primary"
+                                android:textColorHint="@color/text_hint"
+                                android:textSize="12sp"
+                                android:inputType="text"
+                                android:singleLine="true"/>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAddException"
+                            android:text="Ekle"
+                            android:layout_width="72dp"
+                            android:layout_height="44dp"
+                            app:cornerRadius="12dp"
+                            android:backgroundTint="@color/accent_green"
+                            android:textColor="@color/on_primary"
+                            android:textSize="13sp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Mevcut İstisnalar Listesi -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@color/bg_card"
+                app:cardCornerRadius="20dp"
+                app:strokeColor="@color/divider"
+                app:strokeWidth="1dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:text="📋  MEVCUT İSTİSNALAR"
+                            android:textSize="11sp"
+                            android:textColor="@color/text_secondary"
+                            android:textStyle="bold"
+                            android:letterSpacing="0.06"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnRefreshList"
+                            android:text="Yenile"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            app:cornerRadius="8dp"
+                            android:backgroundTint="@color/bg_elevated"
+                            android:textColor="@color/text_secondary"
+                            android:textSize="11sp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/llExceptions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvNoExceptions"
+                            android:text="Henüz istisna yok"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_hint"
+                            android:gravity="center"
+                            android:padding="16dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

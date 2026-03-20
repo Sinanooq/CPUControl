@@ -319,10 +319,65 @@ class AllCpuFragment : Fragment() {
                 tvCurMax.text = if (curMax > 0) "${curMax / 1000} MHz" else "N/A"
             }
 
+            // Governor seçimi
+            val govCard = MaterialCardView(requireContext()).apply {
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).also { it.bottomMargin = dpToPx(12) }
+                setCardBackgroundColor(requireContext().getColor(R.color.bg_card2))
+                radius = dpToPx(12).toFloat()
+                cardElevation = 0f
+            }
+            val govInner = LinearLayout(requireContext()).apply {
+                orientation = LinearLayout.VERTICAL
+                setPadding(dpToPx(16), dpToPx(12), dpToPx(16), dpToPx(12))
+            }
+            val tvGovLabel = TextView(requireContext()).apply {
+                text = "GOVERNOR"
+                textSize = 9f
+                letterSpacing = 0.12f
+                setTextColor(accentColor)
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                ).also { it.bottomMargin = dpToPx(8) }
+            }
+            val spinnerGov = android.widget.Spinner(requireContext())
+            val govAdapter = android.widget.ArrayAdapter(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                RootHelper.GOVERNORS
+            ).also { it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
+            spinnerGov.adapter = govAdapter
+
+            // Mevcut governor'ı seç
+            scope.launch {
+                val cur = withContext(Dispatchers.IO) { RootHelper.getGovernor(info.cpu) }
+                val idx = RootHelper.GOVERNORS.indexOf(cur)
+                if (idx >= 0) spinnerGov.setSelection(idx)
+            }
+
+            spinnerGov.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: android.widget.AdapterView<*>, v: View?, pos: Int, id: Long) {
+                    val gov = RootHelper.GOVERNORS[pos]
+                    scope.launch {
+                        withContext(Dispatchers.IO) { RootHelper.setGovernor(listOf(info.cpu), gov) }
+                    }
+                }
+                override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+            }
+
+            govInner.addView(tvGovLabel)
+            govInner.addView(spinnerGov)
+            govCard.addView(govInner)
+
             inner.addView(headerRow)
             inner.addView(divider)
             inner.addView(freqRow)
             inner.addView(freqCard)
+            inner.addView(govCard)
             inner.addView(btnApply)
             inner.addView(tvStatus)
             card.addView(inner)

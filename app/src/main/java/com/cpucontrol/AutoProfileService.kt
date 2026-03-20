@@ -10,7 +10,6 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.os.Build
 import android.os.IBinder
-import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import kotlinx.coroutines.*
 
@@ -82,8 +81,8 @@ class AutoProfileService : Service() {
     private fun getThermalLevel(): Int {
         return try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                val pm = getSystemService(POWER_SERVICE) as PowerManager
-                pm.currentThermalStatus
+                val pm = getSystemService(android.os.PowerManager::class.java)
+                pm?.currentThermalStatus ?: 0
             } else {
                 0
             }

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_primary"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="28dp">
+
+        <!-- Medya Sesi -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:text="🔊  MEDYA SESİ"
+                        android:textSize="12sp"
+                        android:textColor="@color/accent_cyan"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/tvMediaVal"
+                        android:text="—"
+                        android:textSize="20sp"
+                        android:textColor="@color/accent_cyan"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekMedia"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progressTint="@color/accent_cyan"
+                    android:thumbTint="@color/accent_cyan"/>
+
+                <TextView
+                    android:text="Sistem medya ses seviyesi (0–100)"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_hint"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Zil Sesi -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:text="🔔  ZİL SESİ"
+                        android:textSize="12sp"
+                        android:textColor="@color/accent_green"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/tvRingVal"
+                        android:text="—"
+                        android:textSize="20sp"
+                        android:textColor="@color/accent_green"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekRing"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progressTint="@color/accent_green"
+                    android:thumbTint="@color/accent_green"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Alarm Sesi -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:text="⏰  ALARM SESİ"
+                        android:textSize="12sp"
+                        android:textColor="@color/accent_orange"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/tvAlarmVal"
+                        android:text="—"
+                        android:textSize="20sp"
+                        android:textColor="@color/accent_orange"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekAlarm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="100"
+                    android:progressTint="@color/accent_orange"
+                    android:thumbTint="@color/accent_orange"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Yazılım Amplifikasyonu -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="20dp"
+            app:strokeColor="@color/accent_purple_dim"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:text="🔥  SES AMPLİFİKASYONU"
+                        android:textSize="12sp"
+                        android:textColor="@color/accent_purple"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.08"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/tvGainVal"
+                        android:text="%100 (Normal)"
+                        android:textSize="14sp"
+                        android:textColor="@color/accent_purple"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <TextView
+                    android:text="Yazılım katmanında amplifikasyon · %100–%250"
+                    android:textSize="10sp"
+                    android:textColor="@color/text_hint"
+                    android:layout_marginBottom="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <!-- Boost slider: 0–150 → %100 ile %250 -->
+                <SeekBar
+                    android:id="@+id/seekGain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="150"
+                    android:progress="0"
+                    android:progressTint="@color/accent_purple"
+                    android:thumbTint="@color/accent_purple"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="6dp">
+
+                    <TextView android:text="%100 (Normal)" android:textSize="9sp"
+                        android:textColor="@color/text_hint"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                    <TextView android:text="%250 (Maks)" android:textSize="9sp"
+                        android:textColor="@color/text_hint" android:gravity="end"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="14dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGainApply"
+                        android:text="Uygula"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/accent_purple"
+                        android:textColor="@color/on_primary"
+                        android:textSize="13sp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnGainReset"
+                        android:text="Sıfırla"
+                        android:layout_width="0dp"
+                        android:layout_height="42dp"
+                        android:layout_weight="1"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/bg_elevated"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvGainStatus"
+                    android:text=""
+                    android:textSize="11sp"
+                    android:textColor="@color/accent_green"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

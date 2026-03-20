@@ -1,23 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home"
-        android:title="Ana Sayfa"/>
-    <item
-        android:id="@+id/nav_cpu"
-        android:icon="@drawable/ic_cpu"
-        android:title="CPU"/>
-    <item
-        android:id="@+id/nav_gpu"
-        android:icon="@drawable/ic_gpu"
-        android:title="GPU"/>
-    <item
-        android:id="@+id/nav_profiles"
-        android:icon="@drawable/ic_profile"
-        android:title="Profiller"/>
-    <item
-        android:id="@+id/nav_about"
-        android:icon="@drawable/ic_info"
-        android:title="Hakkında"/>
+    <item android:id="@+id/nav_home"     android:icon="@drawable/ic_home"    android:title="Ana Sayfa"/>
+    <item android:id="@+id/nav_cpu"      android:icon="@drawable/ic_cpu"     android:title="İşlemci"/>
+    <item android:id="@+id/nav_game"     android:icon="@drawable/ic_game"    android:title="Oyun"/>
+    <item android:id="@+id/nav_tools"    android:icon="@drawable/ic_tools"   android:title="Araçlar"/>
+    <item android:id="@+id/nav_more"     android:icon="@drawable/ic_more"    android:title="Daha Fazla"/>
 </menu>

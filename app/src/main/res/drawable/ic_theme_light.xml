@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Güneş ikonu — aydınlık mod aktifken gösterilir (karanlığa geç) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Merkez daire -->
+    <path
+        android:fillColor="@color/text_primary"
+        android:pathData="M12,8 A4,4 0 1,1 12,16 A4,4 0 1,1 12,8 Z"/>
+    <!-- Işınlar -->
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M12,2 L12,4"/>
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M12,20 L12,22"/>
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M2,12 L4,12"/>
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M20,12 L22,12"/>
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M4.93,4.93 L6.34,6.34"/>
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M17.66,17.66 L19.07,19.07"/>
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M19.07,4.93 L17.66,6.34"/>
+    <path
+        android:strokeColor="@color/text_primary"
+        android:strokeWidth="1.8"
+        android:strokeLineCap="round"
+        android:pathData="M6.34,17.66 L4.93,19.07"/>
+</vector>

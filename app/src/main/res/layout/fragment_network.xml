@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_primary"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="28dp">
+
+        <!-- ── TCP ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <TextView android:text="TCP OPTİMİZASYONU" android:textSize="9sp"
+                    android:textColor="@color/accent_cyan" android:textStyle="bold"
+                    android:letterSpacing="0.15" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:layout_marginBottom="18dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="18dp">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:text="BBR Congestion Control" android:textSize="15sp"
+                            android:textStyle="bold" android:textColor="@color/text_primary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvTcpCongestion" android:text="Mevcut: —"
+                            android:textSize="12sp" android:textColor="@color/text_secondary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchTcp"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/divider" android:layout_marginBottom="18dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:text="Düşük Gecikme Modu" android:textSize="15sp"
+                            android:textStyle="bold" android:textColor="@color/text_primary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="tcp_low_latency + hızlı açılış"
+                            android:textSize="12sp" android:textColor="@color/text_secondary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchLowLatency"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── WİFİ ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <TextView android:text="WİFİ" android:textSize="9sp"
+                    android:textColor="@color/accent_purple" android:textStyle="bold"
+                    android:letterSpacing="0.15" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:layout_marginBottom="18dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical">
+
+                    <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:orientation="vertical">
+                        <TextView android:text="WiFi Güç Tasarrufu Kapat" android:textSize="15sp"
+                            android:textStyle="bold" android:textColor="@color/text_primary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="Daha düşük ping için güç tasarrufunu kapat"
+                            android:textSize="12sp" android:textColor="@color/text_secondary"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"
+                            android:layout_marginTop="3dp"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchWifiPowerSave"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── YENİLEME HIZI ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:orientation="vertical" android:padding="22dp">
+
+                <TextView android:text="YENİLEME HIZI" android:textSize="9sp"
+                    android:textColor="@color/accent_yellow" android:textStyle="bold"
+                    android:letterSpacing="0.15" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:layout_marginBottom="18dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView android:text="Hedef" android:textSize="13sp"
+                        android:textColor="@color/text_secondary"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+
+                    <TextView android:id="@+id/tvRefreshRate" android:text="144 Hz"
+                        android:textSize="26sp" android:textStyle="bold"
+                        android:textColor="@color/accent_yellow"
+                        android:layout_width="0dp" android:layout_height="wrap_content"
+                        android:layout_weight="1" android:gravity="end"/>
+                </LinearLayout>
+
+                <SeekBar android:id="@+id/seekRefreshRate"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:max="3" android:progress="3"
+                    android:progressTint="@color/accent_yellow" android:thumbTint="@color/accent_yellow"
+                    android:layout_marginBottom="18dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnApplyRefresh"
+                    android:layout_width="match_parent" android:layout_height="54dp"
+                    android:text="Yenileme Hızını Uygula"
+                    android:textColor="@android:color/black"
+                    android:backgroundTint="@color/accent_yellow"
+                    app:cornerRadius="16dp"/>
+
+                <TextView android:id="@+id/tvRefreshStatus"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:gravity="center" android:textSize="12sp"
+                    android:textColor="@color/text_secondary" android:layout_marginTop="10dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>

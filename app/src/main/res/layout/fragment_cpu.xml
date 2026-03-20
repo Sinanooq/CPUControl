@@ -10,12 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="24dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="28dp">
 
-        <!-- Çekirdek başlık kartı -->
+        <!-- ── DURUM KARTI ── -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,13 +30,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="22dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical">
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="20dp">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -47,10 +48,9 @@
                         <TextView
                             android:id="@+id/tvCoreTitle"
                             android:text="cpu0"
-                            android:textSize="24sp"
+                            android:textSize="26sp"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
@@ -60,7 +60,8 @@
                             android:textSize="12sp"
                             android:textColor="@color/text_secondary"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"/>
                     </LinearLayout>
 
                     <com.google.android.material.switchmaterial.SwitchMaterial
@@ -72,16 +73,15 @@
                         android:textSize="12sp"
                         app:thumbTint="@color/accent_cyan"
                         app:trackTint="@color/divider"/>
-
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/divider"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="20dp"/>
 
+                <!-- Min / Max stat kutuları -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -89,76 +89,51 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:background="@color/accent_green_dim"
-                        android:padding="14dp"
+                        android:padding="16dp"
                         android:layout_marginEnd="8dp">
 
-                        <TextView
-                            android:text="MİN"
-                            android:textSize="8sp"
-                            android:textColor="@color/accent_green"
-                            android:letterSpacing="0.2"
-                            android:layout_width="wrap_content"
+                        <TextView android:text="MİN" android:textSize="8sp"
+                            android:textColor="@color/accent_green" android:letterSpacing="0.2"
+                            android:textStyle="bold" android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:id="@+id/tvCurrentMin"
-                            android:text="—"
-                            android:textSize="22sp"
-                            android:textColor="@color/accent_green"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="MHz"
-                            android:textSize="10sp"
-                            android:textColor="@color/text_secondary"
-                            android:layout_width="wrap_content"
+                        <TextView android:id="@+id/tvCurrentMin" android:text="—"
+                            android:textSize="24sp" android:textColor="@color/accent_green"
+                            android:textStyle="bold" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                        <TextView android:text="MHz" android:textSize="10sp"
+                            android:textColor="@color/text_secondary" android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:background="@color/accent_cyan_dim"
-                        android:padding="14dp">
+                        android:padding="16dp">
 
-                        <TextView
-                            android:text="MAKS"
-                            android:textSize="8sp"
-                            android:textColor="@color/accent_cyan"
-                            android:letterSpacing="0.2"
-                            android:layout_width="wrap_content"
+                        <TextView android:text="MAKS" android:textSize="8sp"
+                            android:textColor="@color/accent_cyan" android:letterSpacing="0.2"
+                            android:textStyle="bold" android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:id="@+id/tvCurrentMax"
-                            android:text="—"
-                            android:textSize="22sp"
-                            android:textColor="@color/accent_cyan"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="MHz"
-                            android:textSize="10sp"
-                            android:textColor="@color/text_secondary"
-                            android:layout_width="wrap_content"
+                        <TextView android:id="@+id/tvCurrentMax" android:text="—"
+                            android:textSize="24sp" android:textColor="@color/accent_cyan"
+                            android:textStyle="bold" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                        <TextView android:text="MHz" android:textSize="10sp"
+                            android:textColor="@color/text_secondary" android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
                     </LinearLayout>
-
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Frekans ayar kartı -->
+        <!-- ── FREKANS AYAR KARTI ── -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardFreqs"
             android:layout_width="match_parent"
@@ -174,111 +149,82 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="22dp">
 
-                <!-- Min -->
+                <!-- MİNİMUM -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="10dp">
 
-                    <TextView
-                        android:text="MİNİMUM"
-                        android:textSize="9sp"
-                        android:textColor="@color/accent_green"
-                        android:letterSpacing="0.15"
-                        android:textStyle="bold"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                    <TextView android:text="MİNİMUM" android:textSize="9sp"
+                        android:textColor="@color/accent_green" android:letterSpacing="0.15"
+                        android:textStyle="bold" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
 
-                    <TextView
-                        android:id="@+id/tvMinSelected"
-                        android:text="169 MHz"
-                        android:textSize="20sp"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tvMinSelected" android:text="169 MHz"
+                        android:textSize="22sp" android:textColor="@color/text_primary"
+                        android:textStyle="bold" android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <SeekBar
-                    android:id="@+id/seekMin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <SeekBar android:id="@+id/seekMin"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:progressTint="@color/accent_green"
-                    android:thumbTint="@color/accent_green"/>
+                    android:progressTint="@color/accent_green" android:thumbTint="@color/accent_green"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="24dp">
-                    <TextView android:id="@+id/tvMinLow" android:text="169 MHz"
-                        android:textSize="10sp" android:textColor="@color/text_hint"
-                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-                    <TextView android:id="@+id/tvMinHigh" android:text="2200 MHz"
-                        android:textSize="10sp" android:textColor="@color/text_hint" android:gravity="end"
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="28dp">
+                    <TextView android:id="@+id/tvMinLow" android:text="169 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:id="@+id/tvMinHigh" android:text="2200 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:gravity="end"
                         android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
                 </LinearLayout>
 
                 <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginBottom="24dp"/>
+                    android:background="@color/divider" android:layout_marginBottom="28dp"/>
 
-                <!-- Max -->
+                <!-- MAKSİMUM -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="10dp">
 
-                    <TextView
-                        android:text="MAKSİMUM"
-                        android:textSize="9sp"
-                        android:textColor="@color/accent_cyan"
-                        android:letterSpacing="0.15"
-                        android:textStyle="bold"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                    <TextView android:text="MAKSİMUM" android:textSize="9sp"
+                        android:textColor="@color/accent_cyan" android:letterSpacing="0.15"
+                        android:textStyle="bold" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
 
-                    <TextView
-                        android:id="@+id/tvMaxSelected"
-                        android:text="2200 MHz"
-                        android:textSize="20sp"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
+                    <TextView android:id="@+id/tvMaxSelected" android:text="2200 MHz"
+                        android:textSize="22sp" android:textColor="@color/text_primary"
+                        android:textStyle="bold" android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <SeekBar
-                    android:id="@+id/seekMax"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <SeekBar android:id="@+id/seekMax"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
-                    android:progressTint="@color/accent_cyan"
-                    android:thumbTint="@color/accent_cyan"/>
+                    android:progressTint="@color/accent_cyan" android:thumbTint="@color/accent_cyan"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                    <TextView android:id="@+id/tvMaxLow" android:text="169 MHz"
-                        android:textSize="10sp" android:textColor="@color/text_hint"
-                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-                    <TextView android:id="@+id/tvMaxHigh" android:text="2200 MHz"
-                        android:textSize="10sp" android:textColor="@color/text_hint" android:gravity="end"
+                    <TextView android:id="@+id/tvMaxLow" android:text="169 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:id="@+id/tvMaxHigh" android:text="2200 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:gravity="end"
                         android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
                 </LinearLayout>
-
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- ── UYGULA ── -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnApply"
             android:text="Uygula"
@@ -288,7 +234,7 @@
             android:backgroundTint="@color/accent_cyan"
             android:textColor="#000000"
             android:textSize="15sp"
-            android:letterSpacing="0.05"
+            android:letterSpacing="0.04"
             android:textStyle="bold"/>
 
         <TextView

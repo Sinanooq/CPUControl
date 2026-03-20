@@ -10,12 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="24dp">
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="28dp">
 
-        <!-- GPU Bilgi Kartı -->
+        <!-- ── GPU BİLGİ KARTI ── -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -30,7 +30,207 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="20dp">
+                android:padding="22dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView android:text="Mali-G615 MC6"
+                            android:textSize="20sp" android:textColor="@color/text_primary"
+                            android:textStyle="bold" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView android:text="6 çekirdek  ·  maks 1400 MHz"
+                            android:textSize="12sp" android:textColor="@color/text_secondary"
+                            android:layout_marginTop="3dp" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@color/accent_yellow_dim"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp">
+
+                        <TextView android:id="@+id/tvGpuCurrentMax" android:text="—"
+                            android:textSize="24sp" android:textColor="@color/accent_yellow"
+                            android:textStyle="bold" android:gravity="center"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="MAKS MHz" android:textSize="8sp"
+                            android:textColor="@color/accent_yellow" android:letterSpacing="0.15"
+                            android:gravity="center" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:layout_marginTop="2dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@color/accent_purple_dim"
+                        android:padding="14dp"
+                        android:layout_marginEnd="8dp">
+
+                        <TextView android:text="MEVCUT MİN" android:textSize="8sp"
+                            android:textColor="@color/accent_purple" android:letterSpacing="0.15"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvGpuCurrentMin" android:text="—"
+                            android:textSize="20sp" android:textColor="@color/accent_purple"
+                            android:textStyle="bold" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:background="@color/accent_yellow_dim"
+                        android:padding="14dp">
+
+                        <TextView android:text="MEVCUT MAKS" android:textSize="8sp"
+                            android:textColor="@color/accent_yellow" android:letterSpacing="0.15"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvGpuCurrentMaxSmall" android:text="—"
+                            android:textSize="20sp" android:textColor="@color/accent_yellow"
+                            android:textStyle="bold" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:layout_marginTop="4dp"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── FREKANS AYAR KARTI ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+                    <TextView android:text="MİNİMUM" android:textSize="9sp"
+                        android:textColor="@color/accent_purple" android:letterSpacing="0.15"
+                        android:textStyle="bold" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:id="@+id/tvGpuMinSelected" android:text="125 MHz"
+                        android:textSize="22sp" android:textColor="@color/text_primary"
+                        android:textStyle="bold" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <SeekBar android:id="@+id/seekGpuMin"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:progressTint="@color/accent_purple" android:thumbTint="@color/accent_purple"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:layout_marginBottom="28dp">
+                    <TextView android:text="125 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:text="1400 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:gravity="end"
+                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                </LinearLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp"
+                    android:background="@color/divider" android:layout_marginBottom="28dp"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal" android:gravity="center_vertical"
+                    android:layout_marginBottom="10dp">
+                    <TextView android:text="MAKSİMUM" android:textSize="9sp"
+                        android:textColor="@color/accent_yellow" android:letterSpacing="0.15"
+                        android:textStyle="bold" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:id="@+id/tvGpuMaxSelected" android:text="1400 MHz"
+                        android:textSize="22sp" android:textColor="@color/text_primary"
+                        android:textStyle="bold" android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                <SeekBar android:id="@+id/seekGpuMax"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:progressTint="@color/accent_yellow" android:thumbTint="@color/accent_yellow"/>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView android:text="125 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:layout_width="0dp"
+                        android:layout_height="wrap_content" android:layout_weight="1"/>
+                    <TextView android:text="1400 MHz" android:textSize="10sp"
+                        android:textColor="@color/text_hint" android:gravity="end"
+                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGpuApply"
+            android:text="Uygula"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            app:cornerRadius="18dp"
+            android:backgroundTint="@color/accent_yellow"
+            android:textColor="#000000"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04"/>
+
+        <TextView android:id="@+id/tvGpuStatus" android:text=""
+            android:textSize="12sp" android:textColor="@color/text_secondary"
+            android:gravity="center" android:layout_marginTop="10dp"
+            android:layout_width="match_parent" android:layout_height="wrap_content"/>
+
+        <!-- ── YENİLEME HIZI ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/bg_card"
+            app:cardCornerRadius="24dp"
+            app:strokeColor="@color/accent_cyan_dim"
+            app:strokeWidth="1dp"
+            app:cardElevation="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="22dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -45,260 +245,132 @@
                         android:layout_weight="1"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:text="Mali-G615 MC6"
-                            android:textSize="20sp"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="6 çekirdek  ·  maks 1400 MHz"
-                            android:textSize="12sp"
-                            android:textColor="@color/text_secondary"
+                        <TextView android:text="YENİLEME HIZI"
+                            android:textSize="9sp" android:textColor="@color/accent_cyan"
+                            android:letterSpacing="0.15" android:textStyle="bold"
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="Ekran yenileme hızını zorla ayarla"
+                            android:textSize="10sp" android:textColor="@color/text_hint"
                             android:layout_marginTop="2dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="@color/accent_yellow_dim"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp">
-
-                        <TextView
-                            android:id="@+id/tvGpuCurrentMax"
-                            android:text="—"
-                            android:textSize="22sp"
-                            android:textColor="@color/accent_yellow"
-                            android:textStyle="bold"
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:text="MAKS MHz"
-                            android:textSize="8sp"
-                            android:textColor="@color/accent_yellow"
-                            android:letterSpacing="0.15"
-                            android:gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
+                    <TextView android:id="@+id/tvCurrentRefresh"
+                        android:text="— Hz"
+                        android:textSize="22sp" android:textColor="@color/accent_cyan"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                 </LinearLayout>
 
-                <!-- Min/Max mevcut -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:background="@color/accent_purple_dim"
-                        android:padding="12dp"
-                        android:layout_marginEnd="6dp">
-
-                        <TextView
-                            android:text="MEVCUT MİN"
-                            android:textSize="8sp"
-                            android:textColor="@color/accent_purple"
-                            android:letterSpacing="0.15"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:id="@+id/tvGpuCurrentMin"
-                            android:text="—"
-                            android:textSize="18sp"
-                            android:textColor="@color/accent_purple"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:background="@color/accent_yellow_dim"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:text="MEVCUT MAKS"
-                            android:textSize="8sp"
-                            android:textColor="@color/accent_yellow"
-                            android:letterSpacing="0.15"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-
-                        <TextView
-                            android:id="@+id/tvGpuCurrentMaxSmall"
-                            android:text="—"
-                            android:textSize="18sp"
-                            android:textColor="@color/accent_yellow"
-                            android:textStyle="bold"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
-                    </LinearLayout>
-                </LinearLayout>
-
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Frekans Ayar Kartı -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="@color/bg_card"
-            app:cardCornerRadius="24dp"
-            app:strokeColor="@color/divider"
-            app:strokeWidth="1dp"
-            app:cardElevation="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <!-- Min -->
+                <!-- Hız butonları -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="6dp">
+                    android:layout_marginBottom="8dp">
 
-                    <TextView
-                        android:text="MİNİMUM"
-                        android:textSize="9sp"
-                        android:textColor="@color/accent_purple"
-                        android:letterSpacing="0.15"
-                        android:textStyle="bold"
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn60hz"
+                        android:text="60 Hz"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/bg_elevated"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn90hz"
+                        android:text="90 Hz"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/bg_elevated"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn120hz"
+                        android:text="120 Hz"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="6dp"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/bg_elevated"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        app:strokeColor="@color/divider"
+                        app:strokeWidth="1dp"/>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnAutoHz"
+                        android:text="Otomatik"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        app:cornerRadius="12dp"
+                        android:backgroundTint="@color/bg_elevated"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="11sp"
+                        app:strokeColor="@color/accent_cyan_dim"
+                        app:strokeWidth="1dp"/>
+                </LinearLayout>
+
+                <!-- Otomatik mod bilgi satırı -->
+                <TextView
+                    android:id="@+id/tvAutoRefreshInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textSize="10sp"
+                    android:textColor="@color/accent_cyan"
+                    android:layout_marginBottom="2dp"/>
+
+                <!-- Senaryo açıklaması -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@color/bg_elevated"
+                    android:padding="10dp"
+                    android:layout_marginTop="4dp">
 
                     <TextView
-                        android:id="@+id/tvGpuMinSelected"
-                        android:text="125 MHz"
-                        android:textSize="20sp"
-                        android:textColor="@color/text_primary"
+                        android:text="Otomatik mod senaryoları:"
+                        android:textSize="9sp"
+                        android:textColor="@color/text_secondary"
                         android:textStyle="bold"
+                        android:layout_marginBottom="4dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-                </LinearLayout>
-
-                <SeekBar
-                    android:id="@+id/seekGpuMin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:progressTint="@color/accent_purple"
-                    android:thumbTint="@color/accent_purple"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="24dp">
-                    <TextView android:text="125 MHz" android:textSize="10sp"
-                        android:textColor="@color/text_hint"
-                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-                    <TextView android:text="1400 MHz" android:textSize="10sp"
-                        android:textColor="@color/text_hint" android:gravity="end"
-                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-                </LinearLayout>
-
-                <View android:layout_width="match_parent" android:layout_height="1dp"
-                    android:background="@color/divider" android:layout_marginBottom="24dp"/>
-
-                <!-- Max -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="6dp">
 
                     <TextView
-                        android:text="MAKSİMUM"
+                        android:text="🎮 Oyun modu aktif → 120 Hz\n⚡ Şarj oluyor / Pil ≥80% → 120 Hz\n📱 Normal kullanım → 90 Hz\n🔋 Pil ≤30% → 60 Hz  ·  Pil ≤15% → 60 Hz"
                         android:textSize="9sp"
-                        android:textColor="@color/accent_yellow"
-                        android:letterSpacing="0.15"
-                        android:textStyle="bold"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
-
-                    <TextView
-                        android:id="@+id/tvGpuMaxSelected"
-                        android:text="1400 MHz"
-                        android:textSize="20sp"
-                        android:textColor="@color/text_primary"
-                        android:textStyle="bold"
+                        android:textColor="@color/text_hint"
+                        android:lineSpacingMultiplier="1.5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
+
+
                 </LinearLayout>
 
-                <SeekBar
-                    android:id="@+id/seekGpuMax"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:progressTint="@color/accent_yellow"
-                    android:thumbTint="@color/accent_yellow"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView android:text="125 MHz" android:textSize="10sp"
-                        android:textColor="@color/text_hint"
-                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-                    <TextView android:text="1400 MHz" android:textSize="10sp"
-                        android:textColor="@color/text_hint" android:gravity="end"
-                        android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-                </LinearLayout>
-
+                <TextView android:id="@+id/tvRefreshStatus"
+                    android:text=""
+                    android:textSize="11sp" android:textColor="@color/accent_green"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGpuApply"
-            android:text="Uygula"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            app:cornerRadius="18dp"
-            android:backgroundTint="@color/accent_yellow"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:letterSpacing="0.05"/>
-
-        <TextView
-            android:id="@+id/tvGpuStatus"
-            android:text=""
-            android:textSize="12sp"
-            android:textColor="@color/text_secondary"
-            android:gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
     </LinearLayout>
 </ScrollView>

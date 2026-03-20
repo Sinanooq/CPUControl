@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#CC0D0F17"
+    android:padding="10dp"
+    android:minWidth="120dp">
+
+    <TextView
+        android:id="@+id/tvOverlayCpu"
+        android:text="CPU: — MHz"
+        android:textSize="11sp"
+        android:textColor="#00D4FF"
+        android:textStyle="bold"
+        android:fontFamily="monospace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/tvOverlayGpu"
+        android:text="GPU: — MHz"
+        android:textSize="11sp"
+        android:textColor="#A78BFA"
+        android:textStyle="bold"
+        android:fontFamily="monospace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/tvOverlayTemp"
+        android:text="TEMP: —°C"
+        android:textSize="11sp"
+        android:textColor="#FF6B35"
+        android:textStyle="bold"
+        android:fontFamily="monospace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/tvOverlayBat"
+        android:text="BAT: —%"
+        android:textSize="11sp"
+        android:textColor="#00E676"
+        android:textStyle="bold"
+        android:fontFamily="monospace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"/>
+
+</LinearLayout>
