@@ -22,8 +22,11 @@ class MainActivity : AppCompatActivity() {
     private val powerReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action == Intent.ACTION_POWER_CONNECTED) {
-                getSharedPreferences("cpu_prefs", MODE_PRIVATE)
-                    .edit().putLong("charge_start_time", System.currentTimeMillis()).apply()
+                getSharedPreferences("cpu_prefs", MODE_PRIVATE).edit()
+                    .putLong("charge_start_time", System.currentTimeMillis())
+                    .putLong("snap_elapsed", android.os.SystemClock.elapsedRealtime())
+                    .putLong("snap_uptime",  android.os.SystemClock.uptimeMillis())
+                    .apply()
             }
         }
     }

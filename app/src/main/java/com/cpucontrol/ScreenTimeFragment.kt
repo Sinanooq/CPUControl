@@ -35,7 +35,11 @@ class ScreenTimeFragment : Fragment() {
 
         btnResetCharge.setOnClickListener {
             val p = requireContext().getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
-            p.edit().putLong("charge_start_time", System.currentTimeMillis()).apply()
+            p.edit()
+                .putLong("charge_start_time", System.currentTimeMillis())
+                .putLong("snap_elapsed", android.os.SystemClock.elapsedRealtime())
+                .putLong("snap_uptime",  android.os.SystemClock.uptimeMillis())
+                .apply()
             loadData(view)
         }
 
@@ -116,6 +120,20 @@ class ScreenTimeFragment : Fragment() {
         // Toplam uptime (cihaz açılışından beri)
         val uptimeMs = android.os.SystemClock.elapsedRealtime()
 
+        // Gerçek deep sleep: snapshot'tan bu yana elapsedRealtime - uptimeMillis farkı
+        // Snapshot yoksa boot'tan beri toplam kullan
+        val snapElapsed = p.getLong("snap_elapsed", 0L)
+        val snapUptime  = p.getLong("snap_uptime",  0L)
+        val deepSleepMs: Long = if (snapElapsed > 0 && isChargePeriod) {
+            val elapsedDelta = android.os.SystemClock.elapsedRealtime() - snapElapsed
+            val uptimeDelta  = android.os.SystemClock.uptimeMillis()    - snapUptime
+            (elapsedDelta - uptimeDelta).coerceAtLeast(0L)
+        } else {
+            // Fallback: boot'tan beri oran ile tahmin
+            (android.os.SystemClock.elapsedRealtime() - android.os.SystemClock.uptimeMillis())
+                .coerceAtLeast(0L)
+        }
+
         // Şarj başlangıç zamanı varsa onu kullan, yoksa son 24 saat
         val now = System.currentTimeMillis()
         val p   = ctx.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
@@ -179,8 +197,7 @@ class ScreenTimeFragment : Fragment() {
             appFgTotal[pkg] = (appFgTotal[pkg] ?: 0L) + (now - start)
         }
 
-        // Deep sleep ≈ ekran kapalı süre (SCREEN_NON_INTERACTIVE = CPU suspend başlangıcı)
-        val deepSleepMs = screenOffMs
+        // Deep sleep event'lerden değil, SystemClock snapshot'tan hesaplandı (yukarıda)
         val pm2 = ctx.packageManager
         val appUsages = appFgTotal
             .filter { it.value > 0 }
