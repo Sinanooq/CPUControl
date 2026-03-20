@@ -1,5 +1,6 @@
 package com.cpucontrol
 
+import android.content.Context
 import android.media.AudioManager
 import android.media.audiofx.LoudnessEnhancer
 import android.os.Bundle
@@ -15,26 +16,26 @@ import kotlinx.coroutines.*
 class AudioFragment : Fragment() {
 
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
-    private var loudnessEnhancer: LoudnessEnhancer? = null
+    private val enhancers = mutableListOf<LoudnessEnhancer>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         inflater.inflate(R.layout.fragment_audio, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val am = requireContext().getSystemService(AudioManager::class.java)
+        val am    = requireContext().getSystemService(AudioManager::class.java)
         val prefs = requireContext().getSharedPreferences("cpu_prefs", 0)
 
-        val seekMedia  = view.findViewById<SeekBar>(R.id.seekMedia)
-        val seekRing   = view.findViewById<SeekBar>(R.id.seekRing)
-        val seekAlarm  = view.findViewById<SeekBar>(R.id.seekAlarm)
-        val seekBoost  = view.findViewById<SeekBar>(R.id.seekGain)
-        val tvMedia    = view.findViewById<TextView>(R.id.tvMediaVal)
-        val tvRing     = view.findViewById<TextView>(R.id.tvRingVal)
-        val tvAlarm    = view.findViewById<TextView>(R.id.tvAlarmVal)
-        val tvBoost    = view.findViewById<TextView>(R.id.tvGainVal)
-        val tvStatus   = view.findViewById<TextView>(R.id.tvGainStatus)
-        val btnApply   = view.findViewById<MaterialButton>(R.id.btnGainApply)
-        val btnReset   = view.findViewById<MaterialButton>(R.id.btnGainReset)
+        val seekMedia = view.findViewById<SeekBar>(R.id.seekMedia)
+        val seekRing  = view.findViewById<SeekBar>(R.id.seekRing)
+        val seekAlarm = view.findViewById<SeekBar>(R.id.seekAlarm)
+        val seekBoost = view.findViewById<SeekBar>(R.id.seekGain)
+        val tvMedia   = view.findViewById<TextView>(R.id.tvMediaVal)
+        val tvRing    = view.findViewById<TextView>(R.id.tvRingVal)
+        val tvAlarm   = view.findViewById<TextView>(R.id.tvAlarmVal)
+        val tvBoost   = view.findViewById<TextView>(R.id.tvGainVal)
+        val tvStatus  = view.findViewById<TextView>(R.id.tvGainStatus)
+        val btnApply  = view.findViewById<MaterialButton>(R.id.btnGainApply)
+        val btnReset  = view.findViewById<MaterialButton>(R.id.btnGainReset)
 
         // ── Sistem ses seviyeleri ──────────────────────────────────────────
         fun pct(stream: Int): Int {
@@ -66,22 +67,17 @@ class AudioFragment : Fragment() {
         seekRing.setOnSeekBarChangeListener(simpleListener(AudioManager.STREAM_RING, tvRing))
         seekAlarm.setOnSeekBarChangeListener(simpleListener(AudioManager.STREAM_ALARM, tvAlarm))
 
-        // ── Yazılım Amplifikasyonu (LoudnessEnhancer) ─────────────────────
-        // Slider: 0–150 → %100 ile %250 arası
-        // 0 = normal (%100), 150 = maksimum boost (%250)
-        // LoudnessEnhancer gain: milli-dB (1500 milli-dB ≈ +1.5 dB ≈ %150 amplifikasyon)
-        // Ama biz 0–1500 milli-dB aralığını 0–150 slider'a map ediyoruz
+        // ── Yazılım Amplifikasyonu ─────────────────────────────────────────
         val savedBoost = prefs.getInt("audio_boost_pct", 0)
         seekBoost.progress = savedBoost
         tvBoost.text = boostLabel(savedBoost)
 
-        // LoudnessEnhancer'ı başlat (session 0 = global medya)
-        initEnhancer(savedBoost)
+        if (savedBoost > 0) {
+            scope.launch { withContext(Dispatchers.IO) { applyBoost(requireContext(), savedBoost) } }
+        }
 
         seekBoost.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(sb: SeekBar?, p: Int, fromUser: Boolean) {
-                tvBoost.text = boostLabel(p)
-            }
+            override fun onProgressChanged(sb: SeekBar?, p: Int, fromUser: Boolean) { tvBoost.text = boostLabel(p) }
             override fun onStartTrackingTouch(sb: SeekBar?) {}
             override fun onStopTrackingTouch(sb: SeekBar?) {}
         })
@@ -90,9 +86,7 @@ class AudioFragment : Fragment() {
             val boost = seekBoost.progress
             scope.launch {
                 tvStatus.text = "Uygulanıyor..."
-                val ok = withContext(Dispatchers.IO) {
-                    applyBoost(boost)
-                }
+                val ok = withContext(Dispatchers.IO) { applyBoost(requireContext(), boost) }
                 if (ok) {
                     prefs.edit().putInt("audio_boost_pct", boost).apply()
                     tvStatus.text = "✓ Uygulandı — ${boostLabel(boost)}"
@@ -108,7 +102,7 @@ class AudioFragment : Fragment() {
             seekBoost.progress = 0
             tvBoost.text = boostLabel(0)
             scope.launch {
-                applyBoost(0)
+                withContext(Dispatchers.IO) { applyBoost(requireContext(), 0) }
                 prefs.edit().putInt("audio_boost_pct", 0).apply()
                 tvStatus.text = "✓ Normal seviyeye döndü"
                 tvStatus.setTextColor(requireContext().getColor(R.color.accent_green))
@@ -116,46 +110,57 @@ class AudioFragment : Fragment() {
         }
     }
 
-    /** Slider değerini (0–150) okunabilir etikete çevirir */
     private fun boostLabel(p: Int): String = when {
         p == 0   -> "%100 (Normal)"
-        p <= 50  -> "%${100 + p} (+${p})"
+        p <= 50  -> "%${100 + p} (+$p)"
         p <= 100 -> "%${100 + p} (Güçlü)"
         else     -> "%${100 + p} (Maksimum)"
     }
 
-    /**
-     * LoudnessEnhancer ile yazılım amplifikasyonu uygular.
-     * session 0 = global audio output — tüm medya sesini etkiler.
-     * gain = slider * 10 milli-dB (0–1500 milli-dB)
-     */
-    private fun initEnhancer(boostPct: Int) {
+    private fun applyBoost(ctx: Context, boostPct: Int): Boolean {
+        // 1. Mevcut enhancer'ları temizle
+        enhancers.forEach { runCatching { it.release() } }
+        enhancers.clear()
+
+        if (boostPct == 0) {
+            // Root ile de sıfırla
+            RootHelper.runAsRoot("setprop persist.audio.volume.boost 0")
+            return true
+        }
+
+        val gainMilliDb = (boostPct * 10).coerceIn(0, 1500) // 0–1500 milli-dB
+
+        // 2. Tüm aktif audio session'larına uygula
+        val am = ctx.getSystemService(AudioManager::class.java)
+        var applied = false
+
+        // Aktif session ID'lerini al (Android 9+)
         try {
-            loudnessEnhancer?.release()
-            loudnessEnhancer = LoudnessEnhancer(0).apply {
-                setTargetGain(boostPct * 10) // milli-dB
-                enabled = boostPct > 0
+            val sessions = am.generateAudioSessionId()
+            // Global session (0) + yeni session
+            for (sessionId in listOf(0, sessions)) {
+                try {
+                    val le = LoudnessEnhancer(sessionId)
+                    le.setTargetGain(gainMilliDb)
+                    le.enabled = true
+                    enhancers.add(le)
+                    applied = true
+                } catch (_: Exception) {}
             }
         } catch (_: Exception) {}
-    }
 
-    private fun applyBoost(boostPct: Int): Boolean {
-        return try {
-            if (loudnessEnhancer == null) initEnhancer(boostPct)
-            loudnessEnhancer?.let {
-                it.setTargetGain(boostPct * 10) // 0–1500 milli-dB
-                it.enabled = boostPct > 0
-            }
-            // Root varsa persist property ile de kaydet (reboot sonrası)
-            if (boostPct > 0) {
-                RootHelper.runAsRoot("setprop persist.audio.volume.boost $boostPct")
-            } else {
-                RootHelper.runAsRoot("setprop persist.audio.volume.boost 0")
-            }
-            true
-        } catch (_: Exception) {
-            false
-        }
+        // 3. Root ile ALSA/tinymix üzerinden hardware gain (cihaza göre değişir)
+        val rootCmds = listOf(
+            // Genel yaklaşım: media server volume
+            "setprop persist.audio.volume.boost $boostPct",
+            // Bazı Qualcomm/MTK cihazlarda çalışan yollar
+            "tinymix 'Speaker Gain' $boostPct 2>/dev/null || true",
+            "tinymix 'RX3 Digital Volume' $boostPct 2>/dev/null || true",
+            "tinymix 'HPOUT1L Digital' $boostPct 2>/dev/null || true"
+        )
+        rootCmds.forEach { RootHelper.runAsRoot(it) }
+
+        return applied
     }
 
     override fun onDestroyView() {
@@ -165,12 +170,11 @@ class AudioFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // Fragment destroy olunca enhancer'ı serbest bırak
-        // Ama boost aktifse bırak çalışmaya devam etsin
         val prefs = requireContext().getSharedPreferences("cpu_prefs", 0)
         if (prefs.getInt("audio_boost_pct", 0) == 0) {
-            loudnessEnhancer?.release()
-            loudnessEnhancer = null
+            enhancers.forEach { runCatching { it.release() } }
+            enhancers.clear()
         }
     }
 }
+
