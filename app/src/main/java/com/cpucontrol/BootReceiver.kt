@@ -42,11 +42,8 @@ class BootReceiver : BroadcastReceiver() {
             autoCancel = true
         )
 
-        // Ongoing bildirim servisini başlat (izin varsa)
-        val p = ctx.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
-        if (p.getBoolean("screen_time_notif", true)) {
-            ctx.startForegroundService(Intent(ctx, ScreenTimeNotificationService::class.java))
-        }
+        // Ongoing bildirim servisini başlat
+        ctx.startForegroundService(Intent(ctx, ScreenTimeNotificationService::class.java))
     }
 
     // ── Şarjdan çekildi ─────────────────────────────────────────────────────
@@ -64,13 +61,11 @@ class BootReceiver : BroadcastReceiver() {
     private fun onBoot(ctx: Context) {
         val p = ctx.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
 
-        // Session yoksa başlat
-        if (p.getLong("session_start_wall", 0L) == 0L) saveSession(ctx)
+        // Session her zaman yenile (boot = yeni oturum)
+        saveSession(ctx)
 
-        // Bildirim servisi
-        if (p.getBoolean("screen_time_notif", true)) {
-            ctx.startForegroundService(Intent(ctx, ScreenTimeNotificationService::class.java))
-        }
+        // Bildirim servisi her zaman başlat
+        ctx.startForegroundService(Intent(ctx, ScreenTimeNotificationService::class.java))
 
         // CPU/GPU ayarları
         val littleMin = p.getInt("little_min", 169000)

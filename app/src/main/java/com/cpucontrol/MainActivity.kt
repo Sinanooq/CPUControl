@@ -22,8 +22,6 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { granted ->
         if (granted) {
-            getSharedPreferences("cpu_prefs", MODE_PRIVATE)
-                .edit().putBoolean("screen_time_notif", true).apply()
             startForegroundService(Intent(this, ScreenTimeNotificationService::class.java))
         }
     }
@@ -34,15 +32,9 @@ class MainActivity : AppCompatActivity() {
                 != android.content.pm.PackageManager.PERMISSION_GRANTED) {
                 notifPermLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
             } else {
-                // İzin zaten var, servisi başlat
-                getSharedPreferences("cpu_prefs", MODE_PRIVATE)
-                    .edit().putBoolean("screen_time_notif", true).apply()
                 startForegroundService(Intent(this, ScreenTimeNotificationService::class.java))
             }
         } else {
-            // Android 12 ve altı — izin gerekmez
-            getSharedPreferences("cpu_prefs", MODE_PRIVATE)
-                .edit().putBoolean("screen_time_notif", true).apply()
             startForegroundService(Intent(this, ScreenTimeNotificationService::class.java))
         }
     }
@@ -68,6 +60,12 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Session yoksa hemen başlat (ilk kurulum / uygulama temizlendikten sonra)
+        val prefs2 = getSharedPreferences("cpu_prefs", MODE_PRIVATE)
+        if (prefs2.getLong("session_start_wall", 0L) == 0L) {
+            ScreenTimeFragment.resetSession(this)
+        }
 
         // Bildirim izni iste + servisi başlat
         requestNotifPermIfNeeded()

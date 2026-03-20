@@ -71,8 +71,6 @@ class ScreenTimeFragment : Fragment() {
         } else true
 
         if (hasNotifPerm) {
-            ctx.getSharedPreferences("cpu_prefs", Context.MODE_PRIVATE)
-                .edit().putBoolean("screen_time_notif", true).apply()
             ctx.startForegroundService(Intent(ctx, ScreenTimeNotificationService::class.java))
         }
     }
